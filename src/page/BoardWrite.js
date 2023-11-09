@@ -30,11 +30,19 @@ export function BoardWrite() {
           status: "success",
         });
       })
-      .catch(() => {
-        toast({
-          description: "Oops! Something has gone wrong!",
-          status: "error",
-        });
+      .catch((error) => {
+        console.log(error.response.status);
+        if (error.response.status === 400) {
+          toast({
+            description: "Please check the content",
+            status: "error",
+          });
+        } else {
+          toast({
+            description: "An error occurred while saving",
+            status: "error",
+          });
+        }
       })
       .finally(() => console.log("finished"));
   }
