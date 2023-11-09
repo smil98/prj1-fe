@@ -5,6 +5,7 @@ import {
   FormLabel,
   Input,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
@@ -14,6 +15,8 @@ export function BoardWrite() {
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
 
+  const toast = useToast();
+
   function handleSubmit() {
     axios
       .post("/api/board/add", {
@@ -21,8 +24,18 @@ export function BoardWrite() {
         content,
         writer,
       })
-      .then(() => console.log("sent sucessfully"))
-      .catch(() => console.log("error"))
+      .then(() => {
+        toast({
+          description: "Post has been saved successfully.",
+          status: "success",
+        });
+      })
+      .catch(() => {
+        toast({
+          description: "Oops! Something has gone wrong!",
+          status: "error",
+        });
+      })
       .finally(() => console.log("finished"));
   }
 
