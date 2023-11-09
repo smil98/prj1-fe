@@ -8,6 +8,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export function BoardWrite() {
@@ -15,6 +16,7 @@ export function BoardWrite() {
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const toast = useToast();
 
@@ -31,6 +33,7 @@ export function BoardWrite() {
           description: "Post has been saved successfully.",
           status: "success",
         });
+        navigate("/");
       })
       .catch((error) => {
         console.log(error.response.status);
