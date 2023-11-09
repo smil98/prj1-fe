@@ -1,5 +1,5 @@
 import React from 'react';
-import {createBrowserRouter, createRoutesFromElements, Route} from "react-router-dom";
+import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
 import {HomeLayout} from "./layout/HomeLayout";
 import {BoardList} from "./page/BoardList";
 import {BoardWrite} from "./page/BoardWrite";
@@ -15,7 +15,7 @@ const routes = createBrowserRouter(
 
 function App(props) {
   return (
-    <div></div>
+    <RouterProvider router={routes} />
   );
 }
 
