@@ -1,4 +1,13 @@
-import { Box, Table, Thead, Tr, Th, Td, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Td,
+  Spinner,
+  Tbody,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 export function BoardList() {
@@ -23,17 +32,19 @@ export function BoardList() {
               <Th>Date</Th>
             </Tr>
           </Thead>
+          <Tbody>
+            {boardList || <Spinner />}
+            {boardList &&
+              boardList.map((board) => (
+                <Tr>
+                  <Td>{board.id}</Td>
+                  <Td>{board.title}</Td>
+                  <Td>{board.writer}</Td>
+                  <Td>{board.inserted}</Td>
+                </Tr>
+              ))}
+          </Tbody>
         </Table>
-        {boardList || <Spinner />}
-        {boardList &&
-          boardList.map((board) => (
-            <Tr>
-              <Td>{board.id}</Td>
-              <Td>{board.title}</Td>
-              <Td>{board.writer}</Td>
-              <Td>{board.inserted}</Td>
-            </Tr>
-          ))}
       </Box>
     </Box>
   );
