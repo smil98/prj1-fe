@@ -6,6 +6,7 @@ import {
   Heading,
   Input,
   Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
@@ -18,6 +19,7 @@ export function BoardEdit() {
   const { id } = useParams();
 
   const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     axios
@@ -27,6 +29,24 @@ export function BoardEdit() {
 
   if (board == null) {
     return <Spinner />;
+  }
+
+  function handleSubmit() {
+    axios
+      .put("/api/board/edit/", board)
+      .then(() => {
+        toast({
+          description: "Post has been updated successfully",
+          status: "success",
+        });
+      })
+      .catch((error) => {
+        toast({
+          description: "An error has occurred while updating",
+          status: "error",
+        });
+      })
+      .finally();
   }
 
   return (
@@ -65,7 +85,9 @@ export function BoardEdit() {
           }
         />
       </FormControl>
-      {/*<Button onClick={handleUpdate} colorScheme="blue">Save</Button>*/}
+      <Button onClick={handleSubmit} colorScheme="blue">
+        Save
+      </Button>
       {/* navigate(-1) : previous route*/}
       <Button onClick={() => navigate(-1)}>Cancel</Button>
     </Box>
