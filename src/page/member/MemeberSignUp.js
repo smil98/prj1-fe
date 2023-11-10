@@ -79,12 +79,19 @@ export function MemeberSignUp() {
 
     axios
       .get("/api/member/check?" + searchParam.toString())
-      .then(() => {
+      .then((res) => {
         setIdAvailable(false);
-        toast({
-          description: "ID already exists",
-          status: "warning",
-        });
+        if (res.status === 204) {
+          toast({
+            description: "Please fill in the ID",
+            status: "error",
+          });
+        } else {
+          toast({
+            description: "ID already exists",
+            status: "warning",
+          });
+        }
       })
       .catch((error) => {
         if (error.response.status === 404) {
@@ -104,14 +111,13 @@ export function MemeberSignUp() {
     axios
       .get("/api/member/check?" + params)
       .then((res) => {
+        setEmailAvailable(false);
         if (res.status === 204) {
-          setEmailAvailable(false);
           toast({
             description: "Please fill in the Email",
             status: "error",
           });
         } else {
-          setEmailAvailable(false);
           toast({
             description: "Email already exists",
             status: "warning",
