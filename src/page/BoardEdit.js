@@ -18,11 +18,12 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 export function BoardEdit() {
   const [board, updateBoard] = useImmer(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const { id } = useParams();
 
@@ -71,36 +72,39 @@ export function BoardEdit() {
         <FormLabel>Title</FormLabel>
         <Input
           value={board.title}
-          onChange={(e) =>
+          onChange={(e) => {
             updateBoard((draft) => {
               draft.title = e.target.value;
-            })
-          }
+            });
+            setIsEditing(true);
+          }}
         />
       </FormControl>
       <FormControl>
         <FormLabel>Content</FormLabel>
         <Input
           value={board.content}
-          onChange={(e) =>
+          onChange={(e) => {
             updateBoard((draft) => {
               draft.content = e.target.value;
-            })
-          }
+            });
+            setIsEditing(true);
+          }}
         />
       </FormControl>
       <FormControl>
         <FormLabel>Writer</FormLabel>
         <Input
           value={board.writer}
-          onChange={(e) =>
+          onChange={(e) => {
             updateBoard((draft) => {
               draft.writer = e.target.value;
-            })
-          }
+            });
+            setIsEditing(true);
+          }}
         />
       </FormControl>
-      <Button onClick={onOpen2} colorScheme="blue">
+      <Button isDisabled={!isEditing} onClick={onOpen2} colorScheme="blue">
         Save
       </Button>
       {/* navigate(-1) : previous route*/}
