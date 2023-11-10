@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -15,8 +16,14 @@ export function MemeberSignUp() {
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [email, setEmail] = useState("");
+  const [idAvailable, setIdAvailable] = useState(true);
 
   let isQualified = true;
+
+  if (idAvailable === false) {
+    isQualified = false;
+  }
+
   if (password.length === 0) {
     isQualified = false;
   }
@@ -37,19 +44,47 @@ export function MemeberSignUp() {
       .finally(() => console.log("finished"));
   }
 
+  function handleIdCheck() {
+    const searchParam = new URLSearchParams();
+    searchParam.set("id", id);
+
+    axios
+      .get("/api/member/check?" + searchParam.toString())
+      .then(() => {
+        setIdAvailable(false);
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          setIdAvailable(true);
+        }
+      });
+  }
+
   return (
     <Box>
       <Heading>Sign Up</Heading>
-      <FormControl>
+      <FormControl isInvalid={!idAvailable}>
         <FormLabel>id</FormLabel>
-        <Input value={id} onChange={(e) => setId(e.target.value)} />
+        <Flex>
+          <Input
+            value={id}
+            onChange={(e) => {
+              setId(e.target.value);
+              setIdAvailable(false);
+            }}
+          />
+          <Button onClick={handleIdCheck}>Check</Button>
+        </Flex>
+        <FormErrorMessage>Please Check whether ID exists</FormErrorMessage>
       </FormControl>
-      <FormControl isInvalid={password.length === 0}>
+      <FormControl>
         <FormLabel>password</FormLabel>
         <Input
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
         />
         <FormErrorMessage>Please Enter Password</FormErrorMessage>
       </FormControl>
