@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Box,
+  Heading,
   Spinner,
   Table,
   Tbody,
@@ -22,6 +23,7 @@ export function MemberList() {
   }
   return (
     <Box>
+      <Heading>Member List</Heading>
       <Table>
         <Thead>
           <Tr>
