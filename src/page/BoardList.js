@@ -7,6 +7,7 @@ import {
   Td,
   Spinner,
   Tbody,
+  Heading,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -27,7 +28,7 @@ export function BoardList() {
 
   return (
     <Box>
-      <h1>Read Boards</h1>
+      <Heading>Read Boards</Heading>
       <Box>
         <Table>
           <Thead>

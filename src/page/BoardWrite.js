@@ -3,6 +3,7 @@ import {
   Button,
   FormControl,
   FormLabel,
+  Heading,
   Input,
   Textarea,
   useToast,
@@ -54,7 +55,7 @@ export function BoardWrite() {
 
   return (
     <Box>
-      <h1>Write Post</h1>
+      <Heading>Write Post</Heading>
       <Box>
         <FormControl>
           <FormLabel>Title</FormLabel>
