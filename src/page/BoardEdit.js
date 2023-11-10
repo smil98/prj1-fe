@@ -59,7 +59,8 @@ export function BoardEdit() {
       .catch((error) => {
         if (error.response.status === 400) {
           toast({
-            description: "Request Error has occurred",
+            description:
+              "Request Error has occurred. Make sure all the content has been filled.",
             status: "error",
           });
         } else {
