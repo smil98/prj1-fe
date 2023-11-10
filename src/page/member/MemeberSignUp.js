@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
@@ -14,6 +15,15 @@ export function MemeberSignUp() {
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [email, setEmail] = useState("");
+
+  let isQualified = true;
+  if (password.length === 0) {
+    isQualified = false;
+  }
+
+  if (password != passwordCheck) {
+    isQualified = false;
+  }
 
   function handleSubmit() {
     axios
@@ -34,21 +44,23 @@ export function MemeberSignUp() {
         <FormLabel>id</FormLabel>
         <Input value={id} onChange={(e) => setId(e.target.value)} />
       </FormControl>
-      <FormControl>
+      <FormControl isInvalid={password.length === 0}>
         <FormLabel>password</FormLabel>
         <Input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <FormErrorMessage>Please Enter Password</FormErrorMessage>
       </FormControl>
-      <FormControl>
+      <FormControl isInvalid={password != passwordCheck}>
         <FormLabel>check password</FormLabel>
         <Input
           type="password"
           value={passwordCheck}
           onChange={(e) => setPasswordCheck(e.target.value)}
         />
+        <FormErrorMessage>Password does not match</FormErrorMessage>
       </FormControl>
       <FormControl>
         <FormLabel>email</FormLabel>
@@ -58,7 +70,11 @@ export function MemeberSignUp() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      <Button onClick={handleSubmit} colorScheme="blue">
+      <Button
+        isDisabled={!isQualified}
+        onClick={handleSubmit}
+        colorScheme="blue"
+      >
         Sign up
       </Button>
     </Box>
