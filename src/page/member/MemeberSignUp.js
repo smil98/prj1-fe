@@ -103,14 +103,16 @@ export function MemeberSignUp() {
 
     axios
       .get("/api/member/check?" + params)
-      .then(() =>
+      .then(() => {
+        setEmailAvailable(false);
         toast({
           description: "Email already exists",
           status: "warning",
-        }),
-      )
+        });
+      })
       .catch((error) => {
         if (error.response.status === 404) {
+          setEmailAvailable(true);
           toast({
             description: "Email Available",
             status: "success",
