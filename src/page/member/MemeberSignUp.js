@@ -4,9 +4,11 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
@@ -17,10 +19,17 @@ export function MemeberSignUp() {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [email, setEmail] = useState("");
   const [idAvailable, setIdAvailable] = useState(true);
+  const [emailAvailable, setEmailAvailable] = useState(true);
+
+  const toast = useToast();
 
   let isQualified = true;
 
   if (idAvailable === false) {
+    isQualified = false;
+  }
+
+  if (emailAvailable === false) {
     isQualified = false;
   }
 
@@ -52,10 +61,40 @@ export function MemeberSignUp() {
       .get("/api/member/check?" + searchParam.toString())
       .then(() => {
         setIdAvailable(false);
+        toast({
+          description: "ID already exists",
+          status: "warning",
+        });
       })
       .catch((error) => {
         if (error.response.status === 404) {
           setIdAvailable(true);
+          toast({
+            description: "ID available",
+            status: "success",
+          });
+        }
+      });
+  }
+
+  function handleEmailCheck() {
+    const params = new URLSearchParams();
+    params.set("email", email);
+
+    axios
+      .get("/api/member/check?" + params)
+      .then(() =>
+        toast({
+          description: "Email already exists",
+          status: "warning",
+        }),
+      )
+      .catch((error) => {
+        if (error.response.status === 404) {
+          toast({
+            description: "Email Available",
+            status: "success",
+          });
         }
       });
   }
@@ -97,13 +136,22 @@ export function MemeberSignUp() {
         />
         <FormErrorMessage>Password does not match</FormErrorMessage>
       </FormControl>
-      <FormControl>
+      <FormControl isInvalid={emailAvailable === false}>
         <FormLabel>email</FormLabel>
-        <Input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <Flex>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setEmailAvailable(false);
+            }}
+          />
+          <Button onClick={handleEmailCheck}>Check</Button>
+          <FormErrorMessage>
+            Please Check whether email is available
+          </FormErrorMessage>
+        </Flex>
       </FormControl>
       <Button
         isDisabled={!isQualified}
