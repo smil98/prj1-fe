@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export function MemeberSignUp() {
   const [id, setId] = useState("");
@@ -22,6 +23,7 @@ export function MemeberSignUp() {
   const [emailAvailable, setEmailAvailable] = useState(true);
 
   const toast = useToast();
+  const navigate = useNavigate();
 
   let isQualified = true;
 
@@ -48,8 +50,26 @@ export function MemeberSignUp() {
         password,
         email,
       })
-      .then(() => console.log("success"))
-      .catch(() => console.log("error"))
+      .then(() => {
+        toast({
+          description: "Sign up successful",
+          status: "success",
+        });
+        navigate("/");
+      })
+      .catch((error) => {
+        if (error.response.status === 400) {
+          toast({
+            description: "Please check if all information has been filled",
+            status: "error",
+          });
+        } else {
+          toast({
+            description: "Error has occurred while signing up",
+            status: "error",
+          });
+        }
+      })
       .finally(() => console.log("finished"));
   }
 
@@ -136,7 +156,7 @@ export function MemeberSignUp() {
         />
         <FormErrorMessage>Password does not match</FormErrorMessage>
       </FormControl>
-      <FormControl isInvalid={emailAvailable === false}>
+      <FormControl isInvalid={!emailAvailable}>
         <FormLabel>email</FormLabel>
         <Flex>
           <Input
@@ -148,10 +168,10 @@ export function MemeberSignUp() {
             }}
           />
           <Button onClick={handleEmailCheck}>Check</Button>
-          <FormErrorMessage>
-            Please Check whether email is available
-          </FormErrorMessage>
         </Flex>
+        <FormErrorMessage>
+          Please Check whether email is available
+        </FormErrorMessage>
       </FormControl>
       <Button
         isDisabled={!isQualified}
