@@ -78,7 +78,9 @@ export function BoardView() {
         <FormLabel>Date</FormLabel>
         <Input value={board.inserted} readOnly />
       </FormControl>
-      <Button colorScheme="purple">Edit</Button>
+      <Button colorScheme="purple" onClick={() => navigate("/edit/" + id)}>
+        Edit
+      </Button>
       <Button colorScheme="red" onClick={onOpen}>
         Delete
       </Button>
