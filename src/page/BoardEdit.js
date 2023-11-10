@@ -1,12 +1,13 @@
 import {
   Box,
+  Button,
   FormControl,
   FormLabel,
   Heading,
   Input,
   Spinner,
 } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
 import React, { useEffect } from "react";
 import axios from "axios";
@@ -15,6 +16,8 @@ export function BoardEdit() {
   const [board, updateBoard] = useImmer(null);
 
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -62,6 +65,9 @@ export function BoardEdit() {
           }
         />
       </FormControl>
+      {/*<Button onClick={handleUpdate} colorScheme="blue">Save</Button>*/}
+      {/* navigate(-1) : previous route*/}
+      <Button onClick={() => navigate(-1)}>Cancel</Button>
     </Box>
   );
 }
