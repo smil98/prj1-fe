@@ -57,10 +57,17 @@ export function BoardEdit() {
         navigate("/");
       })
       .catch((error) => {
-        toast({
-          description: "An error has occurred while updating",
-          status: "error",
-        });
+        if (error.response.status === 400) {
+          toast({
+            description: "Request Error has occurred",
+            status: "error",
+          });
+        } else {
+          toast({
+            description: "An error has occurred while updating",
+            status: "error",
+          });
+        }
       })
       .finally(() => console.log("successful"));
   }
