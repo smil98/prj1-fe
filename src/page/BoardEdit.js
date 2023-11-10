@@ -5,7 +5,15 @@ import {
   FormLabel,
   Heading,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,6 +28,12 @@ export function BoardEdit() {
 
   const navigate = useNavigate();
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpen2,
+    onOpen: onOpen2,
+    onClose: onClose2,
+  } = useDisclosure();
 
   useEffect(() => {
     axios
@@ -33,12 +47,13 @@ export function BoardEdit() {
 
   function handleSubmit() {
     axios
-      .put("/api/board/edit/", board)
+      .put("/api/board/edit", board)
       .then(() => {
         toast({
           description: "Post has been updated successfully",
           status: "success",
         });
+        navigate("/");
       })
       .catch((error) => {
         toast({
@@ -46,7 +61,7 @@ export function BoardEdit() {
           status: "error",
         });
       })
-      .finally();
+      .finally(() => console.log("successful"));
   }
 
   return (
@@ -80,16 +95,48 @@ export function BoardEdit() {
           value={board.writer}
           onChange={(e) =>
             updateBoard((draft) => {
-              draft.title = e.target.value;
+              draft.writer = e.target.value;
             })
           }
         />
       </FormControl>
-      <Button onClick={handleSubmit} colorScheme="blue">
+      <Button onClick={onOpen2} colorScheme="blue">
         Save
       </Button>
       {/* navigate(-1) : previous route*/}
-      <Button onClick={() => navigate(-1)}>Cancel</Button>
+      <Button onClick={onOpen}>Cancel</Button>
+
+      {/* Save Edit Modal */}
+      <Modal isOpen={isOpen2} onClose={onClose2}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Save Edit</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Do you want to save this post?</ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose2}>Continue Editing</Button>
+            <Button onClick={handleSubmit} colorScheme="blue">
+              Save
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/*  Cancel Edit Modal */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Quit Editing</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Are you sure you want to quit editing?</ModalBody>
+          <ModalFooter>
+            <Button onClick={() => navigate(-2)}>Quit</Button>
+            <Button onClick={onClose} colorScheme="blue">
+              Keep Editing
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }
