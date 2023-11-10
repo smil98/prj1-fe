@@ -31,15 +31,36 @@ export function BoardEdit() {
       <Heading>Edit No. {id} Post</Heading>
       <FormControl>
         <FormLabel>Title</FormLabel>
-        <Input value={board.title} />
+        <Input
+          value={board.title}
+          onChange={(e) =>
+            updateBoard((draft) => {
+              draft.title = e.target.value;
+            })
+          }
+        />
       </FormControl>
       <FormControl>
         <FormLabel>Content</FormLabel>
-        <Input value={board.content} />
+        <Input
+          value={board.content}
+          onChange={(e) =>
+            updateBoard((draft) => {
+              draft.content = e.target.value;
+            })
+          }
+        />
       </FormControl>
       <FormControl>
         <FormLabel>Writer</FormLabel>
-        <Input value={board.writer} />
+        <Input
+          value={board.writer}
+          onChange={(e) =>
+            updateBoard((draft) => {
+              draft.title = e.target.value;
+            })
+          }
+        />
       </FormControl>
     </Box>
   );
