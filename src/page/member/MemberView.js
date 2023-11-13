@@ -79,7 +79,9 @@ export function MemberView() {
       </FormControl>
       <FormControl>
         <Button colorScheme="purple">Edit</Button>
-        <Button colorScheme="red">Delete Account</Button>
+        <Button colorScheme="red" onClick={onOpen}>
+          Delete Account
+        </Button>
       </FormControl>
 
       {/*  Delete Modal */}
