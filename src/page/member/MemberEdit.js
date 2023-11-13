@@ -16,8 +16,10 @@ import axios from "axios";
 export function MemberEdit() {
   const [params] = useSearchParams();
   const [member, setMember] = useState(null);
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
   const [email, setEmail] = useState();
-  const [emailAvailable, setEmailAvailable] = useState(true);
+  const [emailAvailable, setEmailAvailable] = useState(false);
   const toast = useToast();
   const id = params.get("id");
 
@@ -33,6 +35,16 @@ export function MemberEdit() {
 
   if (member === null) {
     return <Spinner />;
+  }
+
+  let passwordChecked = false;
+
+  if (passwordCheck === password) {
+    passwordChecked = true;
+  }
+
+  if (password.length === 0) {
+    passwordChecked = true;
   }
 
   let sameOriginEmail = false;
@@ -76,19 +88,32 @@ export function MemberEdit() {
       });
   }
 
+  function handleSubmit() {
+    axios.put("/api/member/edit");
+  }
+
   return (
     <Box>
       <Heading textAlign="center">Edit {id}'s Account Info</Heading>
       <FormControl>
         <FormLabel>Password</FormLabel>
-        <Input type="password" />
+        <Input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </FormControl>
-      <FormControl>
-        <FormLabel>Re-enter Password</FormLabel>
-        <Input type="password" />
-      </FormControl>
+      {password.length > 0 && (
+        <FormControl>
+          <FormLabel>Re-enter Password</FormLabel>
+          <Input
+            type="password"
+            value={passwordCheck}
+            onChange={(e) => setPasswordCheck(e.target.value)}
+          />
+        </FormControl>
+      )}
       {/*if email is changed check whether new=orig or not */}
-      {/* */}
       <FormControl>
         <FormLabel>email</FormLabel>
         <Flex>
@@ -105,6 +130,13 @@ export function MemberEdit() {
           </Button>
         </Flex>
       </FormControl>
+      <Button
+        isDisabled={emailChecked === false || passwordChecked === false}
+        colorScheme="blue"
+        onClick={handleSubmit}
+      >
+        Edit
+      </Button>
     </Box>
   );
 }
