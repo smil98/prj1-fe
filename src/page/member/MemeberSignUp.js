@@ -4,7 +4,6 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -39,7 +38,7 @@ export function MemeberSignUp() {
     isQualified = false;
   }
 
-  if (password != passwordCheck) {
+  if (password !== passwordCheck) {
     isQualified = false;
   }
 
@@ -164,7 +163,7 @@ export function MemeberSignUp() {
         />
         <FormErrorMessage>Please Enter Password</FormErrorMessage>
       </FormControl>
-      <FormControl isInvalid={password != passwordCheck}>
+      <FormControl isInvalid={password !== passwordCheck}>
         <FormLabel>check password</FormLabel>
         <Input
           type="password"
