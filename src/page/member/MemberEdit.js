@@ -134,7 +134,7 @@ export function MemberEdit() {
     params.set("nickName", nickName);
 
     axios
-      .get("/api/member/checkNic?" + params)
+      .get("/api/member/checknic?" + params)
       .then((res) => {
         setNickNameAvailable(false);
         if (res.status === 204) {
