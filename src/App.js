@@ -13,6 +13,7 @@ import { BoardEdit } from "./page/board/BoardEdit";
 import { MemeberSignUp } from "./page/member/MemeberSignUp";
 import { MemberList } from "./page/member/MemberList";
 import { MemberView } from "./page/member/MemberView";
+import { MemberEdit } from "./page/member/MemberEdit";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -22,8 +23,9 @@ const routes = createBrowserRouter(
       <Route path="board/:id" element={<BoardView />} />
       <Route path="edit/:id" element={<BoardEdit />} />
       <Route path="join" element={<MemeberSignUp />} />
+      <Route path="member" element={<MemberView />} />
       <Route path="member/list" element={<MemberList />} />
-      <Route path="member" element={<MemberView />}></Route>
+      <Route path="member/edit" element={<MemberEdit />} />
     </Route>,
   ),
 );

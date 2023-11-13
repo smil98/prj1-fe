@@ -78,7 +78,12 @@ export function MemberView() {
         <Input type="text" value={member.email} readOnly />
       </FormControl>
       <FormControl>
-        <Button colorScheme="purple">Edit</Button>
+        <Button
+          colorScheme="purple"
+          onClick={() => navigate("/member/edit?" + params.toString())}
+        >
+          Edit
+        </Button>
         <Button colorScheme="red" onClick={onOpen}>
           Delete Account
         </Button>
