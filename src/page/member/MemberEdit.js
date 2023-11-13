@@ -6,11 +6,19 @@ import {
   FormLabel,
   Heading,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 export function MemberEdit() {
@@ -20,7 +28,9 @@ export function MemberEdit() {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [email, setEmail] = useState();
   const [emailAvailable, setEmailAvailable] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+  const navigate = useNavigate();
   const id = params.get("id");
 
   useEffect(() => {
@@ -89,7 +99,26 @@ export function MemberEdit() {
   }
 
   function handleSubmit() {
-    axios.put("/api/member/edit");
+    axios
+      .put("/api/member/edit", {
+        id: member.id,
+        password,
+        email,
+      })
+      .then(() => navigate("/"))
+      .catch((error) => {
+        if (error.response.status === 401 || error.response.status === 403) {
+          toast({
+            description: "You have no rights to edit account info",
+            status: "error",
+          });
+        } else {
+          toast({
+            description: "An Error has occurred while updating info",
+            status: "error",
+          });
+        }
+      });
   }
 
   return (
@@ -133,10 +162,25 @@ export function MemberEdit() {
       <Button
         isDisabled={emailChecked === false || passwordChecked === false}
         colorScheme="blue"
-        onClick={handleSubmit}
+        onClick={onOpen}
       >
         Edit
       </Button>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Update Account Info</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Are you sure you want to update this account?</ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>Close</Button>
+            <Button onClick={handleSubmit} colorScheme="blue">
+              Update
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }
