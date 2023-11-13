@@ -70,11 +70,15 @@ export function MemberView() {
     <Box>
       <Heading>{params.get("id")} Account Info</Heading>
       <FormControl>
-        <FormLabel>password</FormLabel>
+        <FormLabel>Password</FormLabel>
         <Input type="text" value={member.password} readOnly />
       </FormControl>
       <FormControl>
-        <FormLabel>email</FormLabel>
+        <FormLabel>Nickname</FormLabel>
+        <Input type="text" value={member.nickName} readOnly />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Email</FormLabel>
         <Input type="text" value={member.email} readOnly />
       </FormControl>
       <FormControl>

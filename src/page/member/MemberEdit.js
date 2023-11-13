@@ -28,6 +28,8 @@ export function MemberEdit() {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [email, setEmail] = useState();
   const [emailAvailable, setEmailAvailable] = useState(false);
+  const [nickName, setNickName] = useState("");
+  const [nickNameAvailable, setNickNameAvailable] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const navigate = useNavigate();
@@ -39,6 +41,7 @@ export function MemberEdit() {
       .then((response) => {
         setMember(response.data);
         setEmail(response.data.email);
+        setNickName(response.data.nickName);
       })
       .catch();
   }, []);
@@ -57,11 +60,15 @@ export function MemberEdit() {
     passwordChecked = true;
   }
 
+  let sameOriginNic = false;
   let sameOriginEmail = false;
 
   if (member !== null) {
     sameOriginEmail = member.email === email;
+    sameOriginNic = member.nickName === nickName;
   }
+
+  let nickChecked = sameOriginNic || nickNameAvailable;
 
   //check if its same as original || if there are any duplicates
   let emailChecked = sameOriginEmail || emailAvailable;
@@ -104,6 +111,7 @@ export function MemberEdit() {
         id: member.id,
         password,
         email,
+        nickName,
       })
       .then(() => navigate("/"))
       .catch((error) => {
@@ -116,6 +124,37 @@ export function MemberEdit() {
           toast({
             description: "An Error has occurred while updating info",
             status: "error",
+          });
+        }
+      });
+  }
+
+  function handleNickCheck() {
+    const params = new URLSearchParams();
+    params.set("nickName", nickName);
+
+    axios
+      .get("/api/member/checkNic?" + params)
+      .then((res) => {
+        setNickNameAvailable(false);
+        if (res.status === 204) {
+          toast({
+            description: "Please fill in the Nickname",
+            status: "error",
+          });
+        } else {
+          toast({
+            description: "Nickname already exists",
+            status: "warning",
+          });
+        }
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          setNickNameAvailable(true);
+          toast({
+            description: "Nickname available",
+            status: "success",
           });
         }
       });
@@ -142,9 +181,25 @@ export function MemberEdit() {
           />
         </FormControl>
       )}
+      <FormControl>
+        <FormLabel>Nickname</FormLabel>
+        <Flex>
+          <Input
+            type="text"
+            value={nickName}
+            onChange={(e) => {
+              setNickName(e.target.value);
+              setNickNameAvailable(false);
+            }}
+          />
+          <Button isDisabled={nickChecked} onClick={handleNickCheck}>
+            Check
+          </Button>
+        </Flex>
+      </FormControl>
       {/*if email is changed check whether new=orig or not */}
       <FormControl>
-        <FormLabel>email</FormLabel>
+        <FormLabel>Email</FormLabel>
         <Flex>
           <Input
             type="email"
@@ -160,7 +215,11 @@ export function MemberEdit() {
         </Flex>
       </FormControl>
       <Button
-        isDisabled={emailChecked === false || passwordChecked === false}
+        isDisabled={
+          emailChecked === false ||
+          passwordChecked === false ||
+          nickChecked === false
+        }
         colorScheme="blue"
         onClick={onOpen}
       >

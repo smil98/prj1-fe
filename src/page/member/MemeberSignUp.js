@@ -18,8 +18,10 @@ export function MemeberSignUp() {
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [email, setEmail] = useState("");
+  const [nickName, setNickName] = useState("");
   const [idAvailable, setIdAvailable] = useState(true);
   const [emailAvailable, setEmailAvailable] = useState(true);
+  const [nickNameAvailable, setNickNameAvailable] = useState(true);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -34,11 +36,19 @@ export function MemeberSignUp() {
     isQualified = false;
   }
 
+  if (nickNameAvailable === false) {
+    isQualified = false;
+  }
+
   if (password.length === 0) {
     isQualified = false;
   }
 
   if (password !== passwordCheck) {
+    isQualified = false;
+  }
+
+  if (nickName.length === 0) {
     isQualified = false;
   }
 
@@ -48,6 +58,7 @@ export function MemeberSignUp() {
         id,
         password,
         email,
+        nickName,
       })
       .then(() => {
         toast({
@@ -135,11 +146,42 @@ export function MemeberSignUp() {
       });
   }
 
+  function handleNickNameCheck() {
+    const params = new URLSearchParams();
+    params.set("nickName", nickName);
+
+    axios
+      .get("/api/member/checknic?" + params)
+      .then((res) => {
+        setNickNameAvailable(false);
+        if (res.status == 204) {
+          toast({
+            description: "Please fill in the Email",
+            status: "error",
+          });
+        } else {
+          toast({
+            description: "Nickname already exists",
+            status: "warning",
+          });
+        }
+      })
+      .catch((error) => {
+        if (error.response.status == 404) {
+          setNickNameAvailable(true);
+          toast({
+            description: "Nickname available",
+            status: "success",
+          });
+        }
+      });
+  }
+
   return (
     <Box>
       <Heading>Sign Up</Heading>
       <FormControl isInvalid={!idAvailable}>
-        <FormLabel>id</FormLabel>
+        <FormLabel>ID</FormLabel>
         <Flex>
           <Input
             value={id}
@@ -153,7 +195,7 @@ export function MemeberSignUp() {
         <FormErrorMessage>Please Check whether ID exists</FormErrorMessage>
       </FormControl>
       <FormControl>
-        <FormLabel>password</FormLabel>
+        <FormLabel>Password</FormLabel>
         <Input
           type="password"
           value={password}
@@ -164,7 +206,7 @@ export function MemeberSignUp() {
         <FormErrorMessage>Please Enter Password</FormErrorMessage>
       </FormControl>
       <FormControl isInvalid={password !== passwordCheck}>
-        <FormLabel>check password</FormLabel>
+        <FormLabel>Check Password</FormLabel>
         <Input
           type="password"
           value={passwordCheck}
@@ -172,8 +214,25 @@ export function MemeberSignUp() {
         />
         <FormErrorMessage>Password does not match</FormErrorMessage>
       </FormControl>
+      <FormControl isInvalid={!nickNameAvailable}>
+        <FormLabel>Nickname</FormLabel>
+        <Flex>
+          <Input
+            type="text"
+            value={nickName}
+            onChange={(e) => {
+              setNickName(e.target.value);
+              setNickNameAvailable(false);
+            }}
+          />
+          <Button onClick={handleNickNameCheck}>Check</Button>
+        </Flex>
+        <FormErrorMessage>
+          Please Check whether nickname exists
+        </FormErrorMessage>
+      </FormControl>
       <FormControl isInvalid={!emailAvailable}>
-        <FormLabel>email</FormLabel>
+        <FormLabel>Email</FormLabel>
         <Flex>
           <Input
             type="email"
