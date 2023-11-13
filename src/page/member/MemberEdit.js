@@ -3,6 +3,7 @@ import {
   Button,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -170,6 +171,9 @@ export function MemberEdit() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <FormHelperText>
+          If left blank, the password won't change
+        </FormHelperText>
       </FormControl>
       {password.length > 0 && (
         <FormControl>
