@@ -31,7 +31,21 @@ export function MemberView() {
     axios
       .get("/api/member?" + params.toString())
       .then((response) => setMember(response.data))
-      .catch(() => console.log("error"));
+      .catch((error) => {
+        if (error.response.status === 401) {
+          toast({
+            description: "Please login to access",
+            status: "error",
+          });
+          navigate("/login");
+        } else if (error.response.status === 403) {
+          toast({
+            description: "You have no rights to view this info",
+            status: "error",
+          });
+          navigate("/");
+        }
+      });
   }, []);
 
   if (member === null) {

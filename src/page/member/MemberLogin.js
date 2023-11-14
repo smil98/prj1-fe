@@ -5,19 +5,34 @@ import {
   FormLabel,
   Heading,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export function MemberLogin() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const toast = useToast();
+  const navigate = useNavigate();
 
   function handleLogin() {
     axios
       .post("/api/member/login", { id, password })
-      .then(() => console.log("success"))
-      .catch(() => console.log("failure"))
+      .then(() => {
+        toast({
+          description: "Login successful",
+          status: "success",
+        });
+        navigate("/");
+      })
+      .catch(() => {
+        toast({
+          description: "Incorrect id or password",
+          status: "error",
+        });
+      })
       .finally(() => console.log("finished"));
   }
 
