@@ -1,14 +1,28 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Button, Flex, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export function NavBar() {
   const navigate = useNavigate();
+  const toast = useToast();
 
   function handleLogout() {
+    // TODO : add possible stuff after logout
     axios
       .post("/api/member/logout")
-      .then(() => console.log("logout successful"));
+      .then(() => {
+        toast({
+          description: "Logout Successful",
+          status: "success",
+        });
+        navigate("/");
+      })
+      .catch((error) => {
+        toast({
+          description: "Something has gone wrong while logging out",
+          status: "error",
+        });
+      });
   }
 
   return (
