@@ -100,18 +100,6 @@ export function BoardEdit() {
           }}
         />
       </FormControl>
-      <FormControl>
-        <FormLabel>Writer</FormLabel>
-        <Input
-          value={board.writer}
-          onChange={(e) => {
-            updateBoard((draft) => {
-              draft.writer = e.target.value;
-            });
-            setIsEditing(true);
-          }}
-        />
-      </FormControl>
       <Button isDisabled={!isEditing} onClick={onOpen2} colorScheme="blue">
         Save
       </Button>
