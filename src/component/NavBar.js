@@ -1,10 +1,13 @@
 import { Button, Flex, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useContext } from "react";
+import { LoginContext } from "../App";
 
 export function NavBar() {
   const navigate = useNavigate();
   const toast = useToast();
+  const { fetchLogin, login, isAuthenticated } = useContext(LoginContext);
 
   function handleLogout() {
     // TODO : add possible stuff after logout
@@ -22,7 +25,8 @@ export function NavBar() {
           description: "Something has gone wrong while logging out",
           status: "error",
         });
-      });
+      })
+      .finally(() => fetchLogin());
   }
 
   return (
