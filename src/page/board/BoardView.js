@@ -31,7 +31,7 @@ export function BoardView() {
   const toast = useToast();
   const navigate = useNavigate();
 
-  const { hasAccess } = useContext(LoginContext);
+  const { hasAccess, isAdmin } = useContext(LoginContext);
 
   useEffect(() => {
     axios
@@ -81,7 +81,7 @@ export function BoardView() {
         <FormLabel>Date</FormLabel>
         <Input value={board.inserted} readOnly />
       </FormControl>
-      {hasAccess(board.writer) && (
+      {(hasAccess(board.writer) || isAdmin()) && (
         <Box>
           <Button colorScheme="purple" onClick={() => navigate("/edit/" + id)}>
             Edit

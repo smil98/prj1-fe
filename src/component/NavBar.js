@@ -7,7 +7,8 @@ import { LoginContext } from "../App";
 export function NavBar() {
   const navigate = useNavigate();
   const toast = useToast();
-  const { fetchLogin, login, isAuthenticated } = useContext(LoginContext);
+  const { fetchLogin, login, isAuthenticated, isAdmin } =
+    useContext(LoginContext);
 
   function handleLogout() {
     // TODO : add possible stuff after logout
@@ -38,7 +39,7 @@ export function NavBar() {
       {isAuthenticated() || (
         <Button onClick={() => navigate("/join")}>Sign Up</Button>
       )}
-      {isAuthenticated() && (
+      {isAdmin() && (
         <Button onClick={() => navigate("/member/list")}>Member List</Button>
       )}
       {isAuthenticated() || (
