@@ -127,7 +127,7 @@ export function BoardEdit() {
           <ModalBody>Do you want to save this post?</ModalBody>
           <ModalFooter>
             <Button onClick={onClose2}>Continue Editing</Button>
-            <Button onClick={handleSubmit} colorScheme="blue">
+            <Button colorScheme="blue" onClick={handleSubmit}>
               Save
             </Button>
           </ModalFooter>

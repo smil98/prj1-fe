@@ -53,7 +53,7 @@ export function BoardView() {
       .catch((error) => {
         toast({
           description: "Error has occurred while deleting",
-          status: error,
+          status: "error",
         });
       })
       .finally(() => onClose());
