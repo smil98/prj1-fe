@@ -27,7 +27,6 @@ export function BoardWrite() {
       .post("/api/board/add", {
         title,
         content,
-        writer,
       })
       .then(() => {
         toast({
@@ -67,13 +66,6 @@ export function BoardWrite() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           ></Textarea>
-        </FormControl>
-        <FormControl>
-          <FormLabel>Writer</FormLabel>
-          <Input
-            value={writer}
-            onChange={(e) => setWriter(e.target.value)}
-          ></Input>
         </FormControl>
         <Button
           isDisabled={isSubmitting}
