@@ -19,12 +19,12 @@ import {
   Text,
   Textarea,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { LoginContext } from "./LoginProvider";
-import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
+import { EditIcon, DeleteIcon, ChatIcon } from "@chakra-ui/icons";
 
 function CommentForm({ boardId, isSubmitting, onSubmit }) {
   const [comment, setComment] = useState("");
@@ -52,7 +52,6 @@ function CommentList({
   onCancelEdit,
 }) {
   const { hasAccess, isAdmin } = useContext(LoginContext);
-  const navigate = useNavigate();
   const formatDateTime = (dateTimeString) => {
     const options = {
       year: "numeric",
@@ -70,57 +69,64 @@ function CommentList({
   return (
     <Card>
       <CardHeader>
-        <Heading size="md">Comment List</Heading>
+        <Heading size="md">
+          <ChatIcon /> Comments + {commentList.length}
+        </Heading>
       </CardHeader>
       <CardBody>
         <Stack divider={<StackDivider />} spacing={4}>
           {commentList.map((comment) => (
             <Box key={comment.id}>
               {comment.isEditing ? (
-                <Flex>
-                  <Input
+                <Flex alignItems={"stretch"}>
+                  <Textarea
                     value={comment.editedContent}
                     onChange={(e) => onEdit(comment.id, e.target.value)}
                   />
                   <Button
+                    h={"none"}
                     colorScheme="blue"
                     onClick={() => onSubmitEdit(comment.id)}
                   >
                     Submit
                   </Button>
-                  <Button onClick={() => onCancelEdit(comment.id)}>
+                  <Button h={"none"} onClick={() => onCancelEdit(comment.id)}>
                     Cancel
                   </Button>
                 </Flex>
               ) : (
-                <Flex justifyConent="space-between" gap={2}>
-                  <Heading size="xs">{comment.memberId}</Heading>
-                  <Text fontSize="xs">{formatDateTime(comment.inserted)}</Text>
-                  {(hasAccess(comment.memberId) || isAdmin()) && (
-                    <>
-                      <Button
-                        size="xs"
-                        variant="link"
-                        onClick={() => onEdit(comment.id, comment.comment)}
-                      >
-                        <EditIcon />
-                      </Button>
-                      <Button
-                        size="xs"
-                        variant="link"
-                        color="red"
-                        isDisabled={isSubmitting}
-                        onClick={() => onDeleteModalOpen(comment.id)}
-                      >
-                        <DeleteIcon />
-                      </Button>
-                    </>
-                  )}
-                </Flex>
+                <>
+                  <Flex justifyConent="space-between" gap={2}>
+                    <Heading size="xs">{comment.memberId}</Heading>
+                    <Text fontSize="xs">
+                      {formatDateTime(comment.inserted)}
+                    </Text>
+                    {(hasAccess(comment.memberId) || isAdmin()) && (
+                      <>
+                        <Button
+                          size="xs"
+                          variant="link"
+                          onClick={() => onEdit(comment.id, comment.comment)}
+                        >
+                          <EditIcon />
+                        </Button>
+                        <Button
+                          size="xs"
+                          variant="link"
+                          color="red"
+                          isDisabled={isSubmitting}
+                          onClick={() => onDeleteModalOpen(comment.id)}
+                        >
+                          <DeleteIcon />
+                        </Button>
+                      </>
+                    )}
+                  </Flex>
+                  <Text pt="2" sx={{ whiteSpace: "pre-wrap" }} fontSize="sm">
+                    {comment.comment}
+                  </Text>
+                </>
               )}
-              <Text pt="2" sx={{ whiteSpace: "pre-wrap" }} fontSize="sm">
-                {comment.comment}
-              </Text>
             </Box>
           ))}
         </Stack>
@@ -134,6 +140,7 @@ export function CommentContainer({ boardId }) {
   const [id, setId] = useState(0);
   const [commentList, setCommentList] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const handleEdit = (commentId, editedContent) => {
     setCommentList((prevList) =>
@@ -177,6 +184,7 @@ export function CommentContainer({ boardId }) {
   }
 
   const handleSubmitEdit = (commentId) => {
+    setIsSubmitting(true);
     const editedComment = commentList.find(
       (comment) => comment.id === commentId,
     );
@@ -195,14 +203,24 @@ export function CommentContainer({ boardId }) {
               : comment,
           ),
         );
+        toast({
+          description: "Comment has been edited successfully",
+          status: "success",
+        });
       })
-      .catch((error) => console.error("error somehow"));
+      .catch((error) =>
+        toast({
+          description: "An error occurred while updating comment",
+          status: "error",
+        }),
+      )
+      .finally(() => setIsSubmitting(false));
   };
 
   const handleCancelEdit = (commentId) => {
     setCommentList((prevList) =>
       prevList.map((comment) =>
-        comment.id === comment.id ? { ...comment, isEditing: false } : comment,
+        comment.id === commentId ? { ...comment, isEditing: false } : comment,
       ),
     );
   };
