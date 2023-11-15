@@ -10,9 +10,13 @@ import {
   StackDivider,
   Text,
   Textarea,
+  useDisclosure,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { LoginContext } from "./LoginProvider";
+import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 
 function CommentForm({ boardId, isSubmitting, onSubmit }) {
   const [comment, setComment] = useState("");
@@ -31,7 +35,9 @@ function CommentForm({ boardId, isSubmitting, onSubmit }) {
   );
 }
 
-function CommentList({ commentList }) {
+function CommentList({ commentList, onDelete, isSubmitting }) {
+  const { hasAccess, isAdmin } = useContext(LoginContext);
+  const navigate = useNavigate();
   const formatDateTime = (dateTimeString) => {
     const options = {
       year: "numeric",
@@ -58,6 +64,26 @@ function CommentList({ commentList }) {
               <Flex justifyConent="space-between" gap={2}>
                 <Heading size="xs">{comment.memberId}</Heading>
                 <Text fontSize="xs">{formatDateTime(comment.inserted)}</Text>
+                {(hasAccess(comment.id) || isAdmin()) && (
+                  <>
+                    <Button
+                      size="xs"
+                      variant="link"
+                      onClick={() => navigate("/comment/edit" + comment.id)}
+                    >
+                      <EditIcon />
+                    </Button>
+                    <Button
+                      size="xs"
+                      variant="link"
+                      color="red"
+                      isDisabled={isSubmitting}
+                      onClick={() => onDelete(comment.id)}
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </>
+                )}
               </Flex>
               <Text pt="2" sx={{ whiteSpace: "pre-wrap" }} fontSize="sm">
                 {comment.comment}
@@ -81,6 +107,12 @@ export function CommentContainer({ boardId }) {
       .finally(() => setIsSubmitting(false));
   }
 
+  function handleDelete(id) {
+    //TODO : modal, then, catch, finally
+    setIsSubmitting(true);
+    axios.delete("/api/comment/" + id).finally(() => setIsSubmitting(false));
+  }
+
   useEffect(() => {
     if (!isSubmitting) {
       const params = new URLSearchParams();
@@ -98,7 +130,12 @@ export function CommentContainer({ boardId }) {
         isSubmitting={isSubmitting}
         onSubmit={handleSubmit}
       />
-      <CommentList commentList={commentList} />
+      <CommentList
+        boardId={boardId}
+        isSubmitting={isSubmitting}
+        commentList={commentList}
+        onDelete={handleDelete}
+      />
     </Box>
   );
 }
