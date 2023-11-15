@@ -15,6 +15,17 @@ import { useNavigate } from "react-router-dom";
 export function BoardList() {
   const [boardList, setBoardList] = useState(null);
   const navigate = useNavigate();
+  const formatDateTime = (dateTimeString) => {
+    const options = {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    };
+
+    return new Intl.DateTimeFormat("en-US", options).format(
+      new Date(dateTimeString),
+    );
+  };
 
   useEffect(() => {
     axios
@@ -51,7 +62,7 @@ export function BoardList() {
                 <Td>{board.id}</Td>
                 <Td>{board.title}</Td>
                 <Td>{board.nickName}</Td>
-                <Td>{board.inserted}</Td>
+                <Td>{formatDateTime(board.inserted)}</Td>
               </Tr>
             ))}
           </Tbody>

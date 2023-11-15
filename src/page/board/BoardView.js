@@ -34,6 +34,20 @@ export function BoardView() {
 
   const { hasAccess, isAdmin } = useContext(LoginContext);
 
+  const formatDateTime = (dateTimeString) => {
+    const options = {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+
+    return new Intl.DateTimeFormat("en-US", options).format(
+      new Date(dateTimeString),
+    );
+  };
+
   useEffect(() => {
     axios
       .get("/api/board/id/" + id)
@@ -80,7 +94,7 @@ export function BoardView() {
       </FormControl>
       <FormControl>
         <FormLabel>Date</FormLabel>
-        <Input value={board.inserted} readOnly />
+        <Input value={formatDateTime(board.inserted)} readOnly />
       </FormControl>
       {(hasAccess(board.writer) || isAdmin()) && (
         <Box>

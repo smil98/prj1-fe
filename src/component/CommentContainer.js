@@ -6,6 +6,13 @@ import {
   CardHeader,
   Flex,
   Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Stack,
   StackDivider,
   Text,
@@ -35,7 +42,7 @@ function CommentForm({ boardId, isSubmitting, onSubmit }) {
   );
 }
 
-function CommentList({ commentList, onDelete, isSubmitting }) {
+function CommentList({ commentList, onDeleteModalOpen, isSubmitting }) {
   const { hasAccess, isAdmin } = useContext(LoginContext);
   const navigate = useNavigate();
   const formatDateTime = (dateTimeString) => {
@@ -78,7 +85,7 @@ function CommentList({ commentList, onDelete, isSubmitting }) {
                       variant="link"
                       color="red"
                       isDisabled={isSubmitting}
-                      onClick={() => onDelete(comment.id)}
+                      onClick={() => onDeleteModalOpen(comment.id)}
                     >
                       <DeleteIcon />
                     </Button>
@@ -98,19 +105,15 @@ function CommentList({ commentList, onDelete, isSubmitting }) {
 
 export function CommentContainer({ boardId }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [id, setId] = useState(0);
   const [commentList, setCommentList] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   function handleSubmit(comment) {
     setIsSubmitting(true);
     axios
       .post("/api/comment/add", comment)
       .finally(() => setIsSubmitting(false));
-  }
-
-  function handleDelete(id) {
-    //TODO : modal, then, catch, finally
-    setIsSubmitting(true);
-    axios.delete("/api/comment/" + id).finally(() => setIsSubmitting(false));
   }
 
   useEffect(() => {
@@ -123,6 +126,20 @@ export function CommentContainer({ boardId }) {
     }
   }, [isSubmitting]);
 
+  function handleDelete() {
+    //TODO : modal, then, catch, finally
+    setIsSubmitting(true);
+    axios.delete("/api/comment/" + id).finally(() => {
+      setIsSubmitting(false);
+      onClose();
+    });
+  }
+
+  function handleDeleteModalOpen(id) {
+    setId(id);
+    onOpen();
+  }
+
   return (
     <Box>
       <CommentForm
@@ -134,8 +151,28 @@ export function CommentContainer({ boardId }) {
         boardId={boardId}
         isSubmitting={isSubmitting}
         commentList={commentList}
-        onDelete={handleDelete}
+        onDeleteModalOpen={handleDeleteModalOpen}
       />
+
+      {/*  Delete Modal */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Delete Comment</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Are you sure you want to delete this comment?</ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>Close</Button>
+            <Button
+              isDisabled={isSubmitting}
+              onClick={handleDelete}
+              colorScheme="red"
+            >
+              Delete
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }
