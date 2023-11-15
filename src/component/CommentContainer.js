@@ -22,6 +22,7 @@ function CommentForm({ boardId }) {
 
 function CommentList({ boardId }) {
   const [commentList, setCommentList] = useState(null);
+
   useEffect(() => {
     const params = new URLSearchParams();
     params.set("id", boardId);
@@ -38,7 +39,7 @@ export function CommentContainer({ boardId }) {
   return (
     <Box>
       <CommentForm boardId={boardId} />
-      <CommentList />
+      <CommentList boardId={boardId} />
     </Box>
   );
 }
