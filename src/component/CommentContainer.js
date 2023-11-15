@@ -14,36 +14,24 @@ import {
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function CommentForm({ boardId }) {
+function CommentForm({ boardId, isSubmitting, onSubmit }) {
   const [comment, setComment] = useState("");
 
   function handleSubmit() {
-    axios.post("/api/comment/add", {
-      boardId,
-      comment,
-    });
+    onSubmit({ boardId, comment });
   }
 
   return (
     <Box>
       <Textarea value={comment} onChange={(e) => setComment(e.target.value)} />
-      <Button onClick={handleSubmit}>Write</Button>
+      <Button isDisabled={isSubmitting} onClick={handleSubmit}>
+        Write
+      </Button>
     </Box>
   );
 }
 
-function CommentList({ boardId }) {
-  const [commentList, setCommentList] = useState([]);
-
-  useEffect(() => {
-    const params = new URLSearchParams();
-    params.set("id", boardId);
-
-    axios
-      .get("/api/comment/list?" + params)
-      .then((response) => setCommentList(response.data));
-  }, []);
-
+function CommentList({ commentList }) {
   return (
     <Card>
       <CardHeader>
@@ -57,7 +45,7 @@ function CommentList({ boardId }) {
                 <Heading size="xs">{comment.memberId}</Heading>
                 <Text fontSize="xs">{comment.inserted}</Text>
               </Flex>
-              <Text pt="2" fontSize="sm">
+              <Text pt="2" sx={{ whiteSpace: "pre-wrap" }} fontSize="sm">
                 {comment.comment}
               </Text>
             </Box>
@@ -69,10 +57,34 @@ function CommentList({ boardId }) {
 }
 
 export function CommentContainer({ boardId }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [commentList, setCommentList] = useState([]);
+
+  function handleSubmit(comment) {
+    setIsSubmitting(true);
+    axios
+      .post("/api/comment/add", comment)
+      .finally(() => setIsSubmitting(false));
+  }
+
+  useEffect(() => {
+    if (!isSubmitting) {
+      const params = new URLSearchParams();
+      params.set("id", boardId);
+      axios
+        .get("/api/comment/list?" + params)
+        .then((response) => setCommentList(response.data));
+    }
+  }, [isSubmitting]);
+
   return (
     <Box>
-      <CommentForm boardId={boardId} />
-      <CommentList boardId={boardId} />
+      <CommentForm
+        boardId={boardId}
+        isSubmitting={isSubmitting}
+        onSubmit={handleSubmit}
+      />
+      <CommentList commentList={commentList} />
     </Box>
   );
 }
