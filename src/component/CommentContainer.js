@@ -64,7 +64,7 @@ function CommentList({ commentList, onDelete, isSubmitting }) {
               <Flex justifyConent="space-between" gap={2}>
                 <Heading size="xs">{comment.memberId}</Heading>
                 <Text fontSize="xs">{formatDateTime(comment.inserted)}</Text>
-                {(hasAccess(comment.id) || isAdmin()) && (
+                {(hasAccess(comment.memberId) || isAdmin()) && (
                   <>
                     <Button
                       size="xs"
