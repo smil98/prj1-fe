@@ -6,6 +6,7 @@ import {
   CardHeader,
   Flex,
   Heading,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -42,7 +43,14 @@ function CommentForm({ boardId, isSubmitting, onSubmit }) {
   );
 }
 
-function CommentList({ commentList, onDeleteModalOpen, isSubmitting }) {
+function CommentList({
+  commentList,
+  onDeleteModalOpen,
+  isSubmitting,
+  onEdit,
+  onSubmitEdit,
+  onCancelEdit,
+}) {
   const { hasAccess, isAdmin } = useContext(LoginContext);
   const navigate = useNavigate();
   const formatDateTime = (dateTimeString) => {
@@ -68,30 +76,48 @@ function CommentList({ commentList, onDeleteModalOpen, isSubmitting }) {
         <Stack divider={<StackDivider />} spacing={4}>
           {commentList.map((comment) => (
             <Box key={comment.id}>
-              <Flex justifyConent="space-between" gap={2}>
-                <Heading size="xs">{comment.memberId}</Heading>
-                <Text fontSize="xs">{formatDateTime(comment.inserted)}</Text>
-                {(hasAccess(comment.memberId) || isAdmin()) && (
-                  <>
-                    <Button
-                      size="xs"
-                      variant="link"
-                      onClick={() => navigate("/comment/edit" + comment.id)}
-                    >
-                      <EditIcon />
-                    </Button>
-                    <Button
-                      size="xs"
-                      variant="link"
-                      color="red"
-                      isDisabled={isSubmitting}
-                      onClick={() => onDeleteModalOpen(comment.id)}
-                    >
-                      <DeleteIcon />
-                    </Button>
-                  </>
-                )}
-              </Flex>
+              {comment.isEditing ? (
+                <Flex>
+                  <Input
+                    value={comment.editedContent}
+                    onChange={(e) => onEdit(comment.id, e.target.value)}
+                  />
+                  <Button
+                    colorScheme="blue"
+                    onClick={() => onSubmitEdit(comment.id)}
+                  >
+                    Submit
+                  </Button>
+                  <Button onClick={() => onCancelEdit(comment.id)}>
+                    Cancel
+                  </Button>
+                </Flex>
+              ) : (
+                <Flex justifyConent="space-between" gap={2}>
+                  <Heading size="xs">{comment.memberId}</Heading>
+                  <Text fontSize="xs">{formatDateTime(comment.inserted)}</Text>
+                  {(hasAccess(comment.memberId) || isAdmin()) && (
+                    <>
+                      <Button
+                        size="xs"
+                        variant="link"
+                        onClick={() => onEdit(comment.id, comment.comment)}
+                      >
+                        <EditIcon />
+                      </Button>
+                      <Button
+                        size="xs"
+                        variant="link"
+                        color="red"
+                        isDisabled={isSubmitting}
+                        onClick={() => onDeleteModalOpen(comment.id)}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </>
+                  )}
+                </Flex>
+              )}
               <Text pt="2" sx={{ whiteSpace: "pre-wrap" }} fontSize="sm">
                 {comment.comment}
               </Text>
@@ -108,6 +134,16 @@ export function CommentContainer({ boardId }) {
   const [id, setId] = useState(0);
   const [commentList, setCommentList] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleEdit = (commentId, editedContent) => {
+    setCommentList((prevList) =>
+      prevList.map((comment) =>
+        comment.id === commentId
+          ? { ...comment, isEditing: true, editedContent }
+          : comment,
+      ),
+    );
+  };
 
   function handleSubmit(comment) {
     setIsSubmitting(true);
@@ -140,6 +176,36 @@ export function CommentContainer({ boardId }) {
     onOpen();
   }
 
+  const handleSubmitEdit = (commentId) => {
+    const editedComment = commentList.find(
+      (comment) => comment.id === commentId,
+    );
+    console.log(commentId);
+    console.log(editedComment);
+    axios
+      .put(`/api/comment/edit/${commentId}`, {
+        id: commentId,
+        comment: editedComment.editedContent,
+      })
+      .then((response) => {
+        setCommentList((prevList) =>
+          prevList.map((comment) =>
+            comment.id === commentId
+              ? { ...comment, isEditing: false }
+              : comment,
+          ),
+        );
+      })
+      .catch((error) => console.error("error somehow"));
+  };
+
+  const handleCancelEdit = (commentId) => {
+    setCommentList((prevList) =>
+      prevList.map((comment) =>
+        comment.id === comment.id ? { ...comment, isEditing: false } : comment,
+      ),
+    );
+  };
   return (
     <Box>
       <CommentForm
@@ -152,6 +218,9 @@ export function CommentContainer({ boardId }) {
         isSubmitting={isSubmitting}
         commentList={commentList}
         onDeleteModalOpen={handleDeleteModalOpen}
+        onEdit={handleEdit}
+        onSubmitEdit={handleSubmitEdit}
+        onCancelEdit={handleCancelEdit}
       />
 
       {/*  Delete Modal */}
