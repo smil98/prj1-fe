@@ -85,16 +85,16 @@ export function BoardView() {
         <Input value={board.title} readOnly />
       </FormControl>
       <FormControl>
-        <FormLabel>Content</FormLabel>
-        <Input value={board.content} readOnly />
+        <FormLabel>Date</FormLabel>
+        <Input value={formatDateTime(board.inserted)} readOnly />
       </FormControl>
       <FormControl>
         <FormLabel>Writer</FormLabel>
         <Input value={board.nickName} readOnly />
       </FormControl>
       <FormControl>
-        <FormLabel>Date</FormLabel>
-        <Input value={formatDateTime(board.inserted)} readOnly />
+        <FormLabel>Content</FormLabel>
+        <Input value={board.content} readOnly />
       </FormControl>
       {(hasAccess(board.writer) || isAdmin()) && (
         <Box>
