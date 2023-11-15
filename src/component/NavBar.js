@@ -9,6 +9,10 @@ export function NavBar() {
   const toast = useToast();
   const { fetchLogin, login, isAuthenticated, isAdmin } =
     useContext(LoginContext);
+  const urlParams = new URLSearchParams();
+  if (login !== "") {
+    urlParams.set("id", login.id);
+  }
 
   function handleLogout() {
     // TODO : add possible stuff after logout
@@ -41,6 +45,11 @@ export function NavBar() {
       )}
       {isAdmin() && (
         <Button onClick={() => navigate("/member/list")}>Member List</Button>
+      )}
+      {isAuthenticated() && (
+        <Button onClick={() => navigate("/member?" + urlParams.toString())}>
+          Account Info
+        </Button>
       )}
       {isAuthenticated() || (
         <Button onClick={() => navigate("/login")}>Log in</Button>
