@@ -97,7 +97,7 @@ function CommentList({
               ) : (
                 <>
                   <Flex justifyConent="space-between" gap={2}>
-                    <Heading size="xs">{comment.memberId}</Heading>
+                    <Heading size="xs">{comment.nickName}</Heading>
                     <Text fontSize="xs">
                       {formatDateTime(comment.inserted)}
                     </Text>
