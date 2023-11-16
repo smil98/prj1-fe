@@ -35,10 +35,16 @@ function CommentForm({ boardId, isSubmitting, onSubmit }) {
 
   return (
     <Box>
-      <Textarea value={comment} onChange={(e) => setComment(e.target.value)} />
-      <Button isDisabled={isSubmitting} onClick={handleSubmit}>
-        Write
-      </Button>
+      <Text fontSize="lg">Write Comment</Text>
+      <Flex gap={2}>
+        <Textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <Button h={"none"} isDisabled={isSubmitting} onClick={handleSubmit}>
+          Submit
+        </Button>
+      </Flex>
     </Box>
   );
 }
