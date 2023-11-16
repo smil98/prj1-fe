@@ -2,8 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
+  Badge,
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -16,11 +18,14 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Stack,
+  Text,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { LoginContext } from "../../component/LoginProvider";
 import { CommentContainer } from "../../component/CommentContainer";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 export function BoardView() {
   const [board, setBoard] = useState(null);
@@ -80,32 +85,35 @@ export function BoardView() {
   return (
     <Box>
       <Heading>View Post</Heading>
-      <FormControl>
-        <FormLabel>Title</FormLabel>
-        <Input value={board.title} readOnly />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Date</FormLabel>
-        <Input value={formatDateTime(board.inserted)} readOnly />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Writer</FormLabel>
-        <Input value={board.nickName} readOnly />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Content</FormLabel>
-        <Input value={board.content} readOnly />
-      </FormControl>
-      {(hasAccess(board.writer) || isAdmin()) && (
-        <Box>
-          <Button colorScheme="purple" onClick={() => navigate("/edit/" + id)}>
-            Edit
-          </Button>
-          <Button colorScheme="red" onClick={onOpen}>
-            Delete
-          </Button>
-        </Box>
-      )}
+      <Box m={3} borderWidth="1px" p={3}>
+        <Stack spacing={0} direction={"row"}>
+          <Text fontSize={"3xl"} as={"b"}>
+            {board.title}
+          </Text>
+          <Text p={3} lineHeight={8}>
+            {formatDateTime(board.inserted)}
+          </Text>
+
+          {(hasAccess(board.writer) || isAdmin()) && (
+            <Box p={1}>
+              <Button
+                colorScheme="purple"
+                variant={"ghost"}
+                onClick={() => navigate("/edit/" + id)}
+              >
+                <EditIcon />
+              </Button>
+              <Button variant="ghost" colorScheme="red" onClick={onOpen}>
+                <DeleteIcon />
+              </Button>
+            </Box>
+          )}
+        </Stack>
+        <Text mt={-3}>
+          <Badge>{board.nickName}</Badge>
+        </Text>
+        <Text mt={10}>{board.content}</Text>
+      </Box>
 
       {/*  Delete Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -122,7 +130,9 @@ export function BoardView() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <CommentContainer boardId={id} />
+      <Box m={3} p={3}>
+        <CommentContainer boardId={id} />
+      </Box>
     </Box>
   );
 }
