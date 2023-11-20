@@ -50,30 +50,32 @@ function Pagination({ pageInfo }) {
   }
 
   return (
-    <Box>
-      {pageInfo.prevPageNumber && (
-        <PageButton variant="ghost" pageNumber={pageInfo.prevPageNumber}>
-          <FontAwesomeIcon icon={faAngleLeft} />
-        </PageButton>
-      )}
+    <Box mt={5}>
+      <Flex justifyContent="center">
+        {pageInfo.prevPageNumber && (
+          <PageButton variant="ghost" pageNumber={pageInfo.prevPageNumber}>
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </PageButton>
+        )}
 
-      {pageNumbers.map((pageNumber) => (
-        <PageButton
-          key={pageNumber}
-          variant={
-            pageNumber === pageInfo.currentPageNumber ? "solid" : "ghost"
-          }
-          pageNumber={pageNumber}
-        >
-          {pageNumber}
-        </PageButton>
-      ))}
+        {pageNumbers.map((pageNumber) => (
+          <PageButton
+            key={pageNumber}
+            variant={
+              pageNumber === pageInfo.currentPageNumber ? "solid" : "ghost"
+            }
+            pageNumber={pageNumber}
+          >
+            {pageNumber}
+          </PageButton>
+        ))}
 
-      {pageInfo.nextPageNumber && (
-        <PageButton variant="ghost" pageNumber={pageInfo.nextPageNumber}>
-          <FontAwesomeIcon icon={faAngleRight} />
-        </PageButton>
-      )}
+        {pageInfo.nextPageNumber && (
+          <PageButton variant="ghost" pageNumber={pageInfo.nextPageNumber}>
+            <FontAwesomeIcon icon={faAngleRight} />
+          </PageButton>
+        )}
+      </Flex>
     </Box>
   );
 }

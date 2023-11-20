@@ -37,14 +37,35 @@ function LikeContainer({ like, onClick }) {
   }
 
   return (
-    <Flex gap={2}>
-      <Tooltip isDisabled={isAuthenticated()} hasArrow label={"로그인 하세요."}>
-        <Button variant="ghost" size="xl" onClick={onClick}>
-          {like.like && <FontAwesomeIcon icon={fullHeart} size="xl" />}
-          {like.like || <FontAwesomeIcon icon={emptyHeart} size="xl" />}
+    <Flex gap={2} justifyContent="center">
+      <Tooltip
+        isDisabled={isAuthenticated()}
+        hasArrow
+        label={"Please login to like"}
+      >
+        <Button
+          size="lg"
+          onClick={onClick}
+          colorScheme="red"
+          style={{ color: "white" }}
+        >
+          {like.like && (
+            <FontAwesomeIcon
+              icon={fullHeart}
+              size="lg"
+              style={{ marginRight: "0.5em" }}
+            />
+          )}
+          {like.like || (
+            <FontAwesomeIcon
+              icon={emptyHeart}
+              size="lg"
+              style={{ marginRight: "0.5em" }}
+            />
+          )}
+          {like.countLike}
         </Button>
       </Tooltip>
-      <Heading size="lg">{like.countLike}</Heading>
     </Flex>
   );
 }
@@ -122,7 +143,6 @@ export function BoardView() {
   return (
     <Box>
       <Heading>View Post</Heading>
-      <LikeContainer like={like} onClick={handleLike} />
       <Box m={3} borderWidth="1px" p={3}>
         <Stack spacing={0} direction={"row"}>
           <Text fontSize={"3xl"} as={"b"}>
@@ -152,10 +172,11 @@ export function BoardView() {
         </Text>
         <Text mt={10}>{board.content}</Text>
         {board.files.map((file) => (
-          <Box my={"5px"} border="3px solid black">
-            <Image width="100%" src={file.url} alt={file.name} />
+          <Box my={5}>
+            <Image src={file.url} border="3px solid black" alt={file.name} />
           </Box>
         ))}
+        <LikeContainer like={like} onClick={handleLike} />
       </Box>
 
       {/*  Delete Modal */}
