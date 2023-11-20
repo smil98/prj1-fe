@@ -6,10 +6,7 @@ import {
   Box,
   Button,
   Flex,
-  FormControl,
-  FormLabel,
   Heading,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -20,15 +17,40 @@ import {
   Spinner,
   Stack,
   Text,
+  Tooltip,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { LoginContext } from "../../component/LoginProvider";
 import { CommentContainer } from "../../component/CommentContainer";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
+
+function LikeContainer({ like, onClick }) {
+  const { isAuthenticated } = useContext(LoginContext);
+
+  if (like === null) {
+    return <Spinner />;
+  }
+
+  return (
+    <Flex gap={2}>
+      <Tooltip isDisabled={isAuthenticated()} hasArrow label={"로그인 하세요."}>
+        <Button variant="ghost" size="xl" onClick={onClick}>
+          {like.like && <FontAwesomeIcon icon={fullHeart} size="xl" />}
+          {like.like || <FontAwesomeIcon icon={emptyHeart} size="xl" />}
+        </Button>
+      </Tooltip>
+      <Heading size="lg">{like.countLike}</Heading>
+    </Flex>
+  );
+}
 
 export function BoardView() {
   const [board, setBoard] = useState(null);
+  const [like, setLike] = useState(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -59,6 +81,12 @@ export function BoardView() {
       .then((response) => setBoard(response.data));
   }, []);
 
+  useEffect(() => {
+    axios
+      .get("/api/like/board/" + id)
+      .then((response) => setLike(response.data));
+  }, []);
+
   if (board === null) {
     return <Spinner />;
   }
@@ -82,9 +110,18 @@ export function BoardView() {
       .finally(() => onClose());
   }
 
+  function handleLike() {
+    axios
+      .post("/api/like", { boardId: board.id })
+      .then((response) => setLike(response.data))
+      .catch(() => console.log("bad"))
+      .finally(() => console.log("done"));
+  }
+
   return (
     <Box>
       <Heading>View Post</Heading>
+      <LikeContainer like={like} onClick={handleLike} />
       <Box m={3} borderWidth="1px" p={3}>
         <Stack spacing={0} direction={"row"}>
           <Text fontSize={"3xl"} as={"b"}>

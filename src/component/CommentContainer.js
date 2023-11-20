@@ -107,6 +107,7 @@ function CommentList({
                     <Text fontSize="xs">
                       {formatDateTime(comment.inserted)}
                     </Text>
+                    <Text fontSize="xs">{comment.ago}</Text>
                     {(hasAccess(comment.memberId) || isAdmin()) && (
                       <>
                         <Button

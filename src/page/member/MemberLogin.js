@@ -7,17 +7,15 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "../../component/LoginProvider";
 
 export function MemberLogin() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const toast = useToast();
   const navigate = useNavigate();
-  const { fetchLogin } = useContext(LoginContext);
 
   function handleLogin() {
     axios
@@ -34,9 +32,6 @@ export function MemberLogin() {
           description: "Incorrect id or password",
           status: "error",
         });
-      })
-      .finally(() => {
-        fetchLogin();
       });
   }
 

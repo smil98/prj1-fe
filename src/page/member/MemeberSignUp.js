@@ -154,7 +154,7 @@ export function MemeberSignUp() {
       .get("/api/member/checknic?" + params)
       .then((res) => {
         setNickNameAvailable(false);
-        if (res.status == 204) {
+        if (res.status === 204) {
           toast({
             description: "Please fill in the Email",
             status: "error",
@@ -167,7 +167,7 @@ export function MemeberSignUp() {
         }
       })
       .catch((error) => {
-        if (error.response.status == 404) {
+        if (error.response.status === 404) {
           setNickNameAvailable(true);
           toast({
             description: "Nickname available",

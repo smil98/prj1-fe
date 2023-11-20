@@ -1,8 +1,18 @@
 import { Button, Flex, useToast } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { LoginContext } from "./LoginProvider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHouse,
+  faPen,
+  faRightFromBracket,
+  faRightToBracket,
+  faUser,
+  faUserPlus,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
 
 export function NavBar() {
   const navigate = useNavigate();
@@ -13,6 +23,12 @@ export function NavBar() {
   if (login !== "") {
     urlParams.set("id", login.id);
   }
+
+  const location = useLocation();
+
+  useEffect(() => {
+    fetchLogin();
+  }, [location]);
 
   function handleLogout() {
     // TODO : add possible stuff after logout
@@ -36,25 +52,52 @@ export function NavBar() {
 
   return (
     <Flex>
-      <Button onClick={() => navigate("/")}>Home</Button>
+      <Button onClick={() => navigate("/")}>
+        <FontAwesomeIcon icon={faHouse} style={{ marginRight: "0.5em" }} />
+        Home
+      </Button>
       {isAuthenticated() && (
-        <Button onClick={() => navigate("/write")}>Write</Button>
+        <Button onClick={() => navigate("/write")}>
+          <FontAwesomeIcon icon={faPen} style={{ marginRight: "0.5em" }} />
+          Write
+        </Button>
       )}
       {isAuthenticated() || (
-        <Button onClick={() => navigate("/join")}>Sign Up</Button>
+        <Button onClick={() => navigate("/join")}>
+          <FontAwesomeIcon icon={faUserPlus} style={{ marginRight: "0.5em" }} />
+          Sign Up
+        </Button>
       )}
       {isAdmin() && (
-        <Button onClick={() => navigate("/member/list")}>Member List</Button>
+        <Button onClick={() => navigate("/member/list")}>
+          <FontAwesomeIcon icon={faUsers} style={{ marginRight: "0.5em" }} />
+          Member List
+        </Button>
       )}
       {isAuthenticated() && (
         <Button onClick={() => navigate("/member?" + urlParams.toString())}>
+          <FontAwesomeIcon icon={faUser} style={{ marginRight: "0.5em" }} />
           Account Info
         </Button>
       )}
       {isAuthenticated() || (
-        <Button onClick={() => navigate("/login")}>Log in</Button>
+        <Button onClick={() => navigate("/login")}>
+          <FontAwesomeIcon
+            icon={faRightToBracket}
+            style={{ marginRight: "0.5em" }}
+          />
+          Login
+        </Button>
       )}
-      {isAuthenticated() && <Button onClick={handleLogout}>Log out</Button>}
+      {isAuthenticated() && (
+        <Button onClick={handleLogout}>
+          <FontAwesomeIcon
+            icon={faRightFromBracket}
+            style={{ marginRight: "0.5em" }}
+          />
+          Log out
+        </Button>
+      )}
     </Flex>
   );
 }
