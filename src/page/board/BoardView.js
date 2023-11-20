@@ -7,6 +7,7 @@ import {
   Button,
   Flex,
   Heading,
+  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -150,6 +151,11 @@ export function BoardView() {
           <Badge>{board.nickName}</Badge>
         </Text>
         <Text mt={10}>{board.content}</Text>
+        {board.files.map((file) => (
+          <Box my={"5px"} border="3px solid black">
+            <Image width="100%" src={file.url} alt={file.name} />
+          </Box>
+        ))}
       </Box>
 
       {/*  Delete Modal */}
@@ -167,6 +173,7 @@ export function BoardView() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
       <Box m={3} p={3}>
         <CommentContainer boardId={id} />
       </Box>

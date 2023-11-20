@@ -25,6 +25,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { LoginContext } from "./LoginProvider";
 import { EditIcon, DeleteIcon, ChatIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 function CommentForm({ boardId, isSubmitting, onSubmit }) {
   const [comment, setComment] = useState("");
@@ -34,8 +35,10 @@ function CommentForm({ boardId, isSubmitting, onSubmit }) {
   }
 
   return (
-    <Box>
-      <Text fontSize="lg">Write Comment</Text>
+    <Box m={3}>
+      <Heading size="md" mb={3}>
+        Write Comment
+      </Heading>
       <Flex gap={2}>
         <Textarea
           value={comment}
@@ -148,6 +151,7 @@ export function CommentContainer({ boardId }) {
   const [commentList, setCommentList] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const handleEdit = (commentId, editedContent) => {
     setCommentList((prevList) =>
@@ -163,6 +167,21 @@ export function CommentContainer({ boardId }) {
     setIsSubmitting(true);
     axios
       .post("/api/comment/add", comment)
+      .catch((error) => {
+        console.log(error.response.status);
+        if (error.response.status === 401) {
+          toast({
+            description: "Please login to leave comment",
+            status: "error",
+          });
+          navigate("/login");
+        } else {
+          toast({
+            description: "An error occurred while submitting. Please try again",
+            status: "error",
+          });
+        }
+      })
       .finally(() => setIsSubmitting(false));
   }
 
@@ -233,11 +252,6 @@ export function CommentContainer({ boardId }) {
   };
   return (
     <Box>
-      <CommentForm
-        boardId={boardId}
-        isSubmitting={isSubmitting}
-        onSubmit={handleSubmit}
-      />
       <CommentList
         boardId={boardId}
         isSubmitting={isSubmitting}
@@ -246,6 +260,11 @@ export function CommentContainer({ boardId }) {
         onEdit={handleEdit}
         onSubmitEdit={handleSubmitEdit}
         onCancelEdit={handleCancelEdit}
+      />
+      <CommentForm
+        boardId={boardId}
+        isSubmitting={isSubmitting}
+        onSubmit={handleSubmit}
       />
 
       {/*  Delete Modal */}
