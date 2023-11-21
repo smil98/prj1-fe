@@ -64,7 +64,7 @@ export function BoardEdit() {
         title: board.title,
         content: board.content,
         uploadFiles,
-        selectedImages
+        selectedImages,
       })
       .then(() => {
         toast({
@@ -143,9 +143,21 @@ export function BoardEdit() {
               Delete Image
             </MenuButton>
             <MenuList>
-              <MenuItem onClick={() => handleImageSelection("*")}>All</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleImageSelection("*");
+                  setIsEditing(true);
+                }}
+              >
+                All
+              </MenuItem>
               {board.files.map((file) => (
-                <MenuItem onClick={() => handleImageSelection(file.name)}>
+                <MenuItem
+                  onClick={() => {
+                    handleImageSelection(file.name);
+                    setIsEditing(true);
+                  }}
+                >
                   {file.name}
                 </MenuItem>
               ))}
@@ -159,7 +171,10 @@ export function BoardEdit() {
           type="file"
           accept="image/*"
           multiple
-          onChange={(e) => setUploadFiles(e.target.files)}
+          onChange={(e) => {
+            setUploadFiles(e.target.files);
+            setIsEditing(true);
+          }}
         />
       </FormControl>
       <Button isDisabled={!isEditing} onClick={onOpen2} colorScheme="blue">
