@@ -2,8 +2,10 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -13,6 +15,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Switch,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -20,10 +23,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 export function BoardEdit() {
   const [board, updateBoard] = useImmer(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [removeFileIds, setRemoveFileIds] = useState([]);
+  const [uploadFiles, setUploadFiles] = useState(null);
 
   const { id } = useParams();
 
@@ -48,7 +56,13 @@ export function BoardEdit() {
 
   function handleSubmit() {
     axios
-      .put("/api/board/edit", board)
+      .putForm("/api/board/edit", {
+        id: board.id,
+        title: board.title,
+        content: board.content,
+        removeFileIds,
+        uploadFiles,
+      })
       .then(() => {
         toast({
           description: "Post has been updated successfully",
@@ -71,6 +85,15 @@ export function BoardEdit() {
         }
       })
       .finally(() => console.log("successful"));
+  }
+
+  console.log(removeFileIds);
+  function handleRemoveFileSwitch(e) {
+    if (e.target.checked) {
+      setRemoveFileIds([...removeFileIds, e.target.value]);
+    } else {
+      setRemoveFileIds(removeFileIds.filter((item) => item !== e.target.value));
+    }
   }
 
   return (
@@ -99,6 +122,36 @@ export function BoardEdit() {
             setIsEditing(true);
           }}
         />
+      </FormControl>
+      {board.files.length > 0 &&
+        board.files.map((file) => (
+          <Box key={file.id} my="5px" border="3px solid black">
+            <FormControl display="flex" alignItems="center">
+              <FormLabel>
+                <FontAwesomeIcon color="red" icon={faTrashCan} />
+              </FormLabel>
+              <Switch
+                value={file.id}
+                colorScheme="red"
+                onChange={handleRemoveFileSwitch}
+              />
+            </FormControl>
+            <Box>
+              <Image src={file.url} alt={file.name} width="100%" />
+            </Box>
+          </Box>
+        ))}
+      <FormControl>
+        <FormLabel>Image</FormLabel>
+        <Input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => setUploadFiles(e.target.files)}
+        />
+        <FormHelperText>
+          can upload 1MB per file maximum, total under 10MB
+        </FormHelperText>
       </FormControl>
       <Button isDisabled={!isEditing} onClick={onOpen2} colorScheme="blue">
         Save
