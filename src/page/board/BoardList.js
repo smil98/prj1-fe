@@ -12,6 +12,7 @@ import {
   Button,
   Flex,
   Input,
+  Select,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -83,18 +84,27 @@ function Pagination({ pageInfo }) {
 
 function SearchComponent() {
   const [keyword, setKeyword] = useState("");
+  const [category, setCategory] = useState("all");
   const navigate = useNavigate();
 
   function handleSearch() {
     // /?k=keyword
     const params = new URLSearchParams();
     params.set("k", keyword);
+    params.set("c", category);
 
     navigate("/?" + params);
   }
 
   return (
     <Flex>
+      <Select onChange={(e) => setCategory(e.target.value)}>
+        <option selected value="all">
+          All
+        </option>
+        <option value="title">Title</option>
+        <option value="content">Content</option>
+      </Select>
       <Input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
       <Button onClick={handleSearch}>Search</Button>
     </Flex>

@@ -64,7 +64,7 @@ export function BoardEdit() {
         title: board.title,
         content: board.content,
         uploadFiles,
-        selectedImages,
+        selectedImages
       })
       .then(() => {
         toast({
