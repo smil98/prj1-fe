@@ -36,17 +36,32 @@ export function MemberLogin() {
   }
 
   return (
-    <Box>
-      <Heading>Login</Heading>
-      <FormControl>
+    <Box
+      p={10}
+      borderRadius={10}
+      boxShadow="base"
+      w={{ sm: "100%", lg: "30%" }}
+      mt={10}
+      ml={{ sm: "0%", lg: "35%" }}
+    >
+      <Heading textAlign="center" mb={5}>
+        Login
+      </Heading>
+      <FormControl mb={3}>
         <FormLabel>ID</FormLabel>
-        <Input type="text" value={id} onChange={(e) => setId(e.target.value)} />
+        <Input
+          type="text"
+          value={id}
+          placeholder="Enter your ID"
+          onChange={(e) => setId(e.target.value)}
+        />
       </FormControl>
-      <FormControl>
+      <FormControl mb={5}>
         <FormLabel>Password</FormLabel>
         <Input
           type="password"
           value={password}
+          placeholder="Enter your password"
           onChange={(e) => setPassword(e.target.value)}
         />
       </FormControl>

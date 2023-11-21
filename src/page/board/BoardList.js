@@ -178,7 +178,7 @@ export function BoardList() {
                     </Badge>
                   )}
                   {board.countFile > 0 && (
-                    <Badge ml={1} mb={0.5} colorScheme="orange">
+                    <Badge ml={1} mb={0.5}>
                       <FontAwesomeIcon icon={faImages} />
                       {board.countFile}
                     </Badge>
