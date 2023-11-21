@@ -16,7 +16,7 @@ import axios from "axios";
 export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [files, setFiles] = useState(null);
+  const [uploadFiles, setUploadFiles] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ export function BoardWrite() {
       .postForm("/api/board/add", {
         title,
         content,
-        files,
+        uploadFiles,
       })
       .then(() => {
         toast({
@@ -75,7 +75,7 @@ export function BoardWrite() {
             type="file"
             accept="image/*"
             multiple
-            onChange={(e) => setFiles(e.target.files)}
+            onChange={(e) => setUploadFiles(e.target.files)}
           />
           <FormHelperText>
             You can only upload files less than 1MB, 10MB total
