@@ -1,10 +1,16 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
+  Image,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -13,6 +19,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Tooltip,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -20,10 +27,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 export function BoardEdit() {
   const [board, updateBoard] = useImmer(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [uploadFiles, setUploadFiles] = useState(null);
 
   const { id } = useParams();
 
@@ -47,8 +57,15 @@ export function BoardEdit() {
   }
 
   function handleSubmit() {
+    console.log(selectedImages);
     axios
-      .put("/api/board/edit", board)
+      .putForm("/api/board/edit", {
+        id: board.id,
+        title: board.title,
+        content: board.content,
+        uploadFiles,
+        selectedImages,
+      })
       .then(() => {
         toast({
           description: "Post has been updated successfully",
@@ -72,6 +89,16 @@ export function BoardEdit() {
       })
       .finally(() => console.log("successful"));
   }
+
+  const handleImageSelection = (imageName) => {
+    setSelectedImages((prevSelectedImages) => {
+      if (prevSelectedImages.includes(imageName)) {
+        return prevSelectedImages.filter((name) => name !== imageName);
+      } else {
+        return [...prevSelectedImages, imageName];
+      }
+    });
+  };
 
   return (
     <Box>
@@ -98,6 +125,41 @@ export function BoardEdit() {
             });
             setIsEditing(true);
           }}
+        />
+        {board.files.map((file) => (
+          <Tooltip hasArrow label={file.name}>
+            <Box my={5}>
+              <Image src={file.url} border="3px solid black" alt={file.name} />
+            </Box>
+          </Tooltip>
+        ))}
+        <Flex gap={2}>
+          <Menu>
+            <MenuButton
+              as={Button}
+              rightIcon={<DeleteIcon ml={2} />}
+              colorScheme="red"
+            >
+              Delete Image
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={() => handleImageSelection("*")}>All</MenuItem>
+              {board.files.map((file) => (
+                <MenuItem onClick={() => handleImageSelection(file.name)}>
+                  {file.name}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        </Flex>
+      </FormControl>
+      <FormControl>
+        <FormLabel>New Attachments</FormLabel>
+        <Input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => setUploadFiles(e.target.files)}
         />
       </FormControl>
       <Button isDisabled={!isEditing} onClick={onOpen2} colorScheme="blue">
