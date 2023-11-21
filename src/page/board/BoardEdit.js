@@ -55,6 +55,7 @@ export function BoardEdit() {
   }
 
   function handleSubmit() {
+    console.log(removeFileIds);
     axios
       .putForm("/api/board/edit", {
         id: board.id,
