@@ -104,6 +104,7 @@ function SearchComponent() {
         </option>
         <option value="title">Title</option>
         <option value="content">Content</option>
+        <option value="nickName">Writer</option>
       </Select>
       <Input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
       <Button onClick={handleSearch}>Search</Button>
