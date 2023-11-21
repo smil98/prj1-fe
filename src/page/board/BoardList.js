@@ -21,6 +21,7 @@ import {
   faAngleLeft,
   faAngleRight,
   faHeart,
+  faImages,
 } from "@fortawesome/free-solid-svg-icons";
 
 import * as PropTypes from "prop-types";
@@ -163,6 +164,12 @@ export function BoardList() {
                   {board.countComment > 0 && (
                     <Badge ml={1} mb={0.5} colorScheme="blue">
                       {board.countComment}
+                    </Badge>
+                  )}
+                  {board.countFile > 0 && (
+                    <Badge ml={1} mb={0.5} colorScheme="orange">
+                      <FontAwesomeIcon icon={faImages} />
+                      {board.countFile}
                     </Badge>
                   )}
                 </Td>
