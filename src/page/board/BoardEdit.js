@@ -1,12 +1,16 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
-  FormHelperText,
   FormLabel,
   Heading,
   Image,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,7 +19,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
-  Switch,
+  Tooltip,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -24,13 +28,11 @@ import { useImmer } from "use-immer";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 export function BoardEdit() {
   const [board, updateBoard] = useImmer(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [removeFileIds, setRemoveFileIds] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
   const [uploadFiles, setUploadFiles] = useState(null);
 
   const { id } = useParams();
@@ -55,14 +57,14 @@ export function BoardEdit() {
   }
 
   function handleSubmit() {
-    console.log(removeFileIds);
+    console.log(selectedImages);
     axios
       .putForm("/api/board/edit", {
         id: board.id,
         title: board.title,
         content: board.content,
-        removeFileIds,
         uploadFiles,
+        selectedImages,
       })
       .then(() => {
         toast({
@@ -88,14 +90,15 @@ export function BoardEdit() {
       .finally(() => console.log("successful"));
   }
 
-  console.log(removeFileIds);
-  function handleRemoveFileSwitch(e) {
-    if (e.target.checked) {
-      setRemoveFileIds([...removeFileIds, e.target.value]);
-    } else {
-      setRemoveFileIds(removeFileIds.filter((item) => item !== e.target.value));
-    }
-  }
+  const handleImageSelection = (imageName) => {
+    setSelectedImages((prevSelectedImages) => {
+      if (prevSelectedImages.includes(imageName)) {
+        return prevSelectedImages.filter((name) => name !== imageName);
+      } else {
+        return [...prevSelectedImages, imageName];
+      }
+    });
+  };
 
   return (
     <Box>
@@ -123,36 +126,56 @@ export function BoardEdit() {
             setIsEditing(true);
           }}
         />
-      </FormControl>
-      {board.files.length > 0 &&
-        board.files.map((file) => (
-          <Box key={file.id} my="5px" border="3px solid black">
-            <FormControl display="flex" alignItems="center">
-              <FormLabel>
-                <FontAwesomeIcon color="red" icon={faTrashCan} />
-              </FormLabel>
-              <Switch
-                value={file.id}
-                colorScheme="red"
-                onChange={handleRemoveFileSwitch}
-              />
-            </FormControl>
-            <Box>
-              <Image src={file.url} alt={file.name} width="100%" />
+        {board.files.map((file) => (
+          <Tooltip hasArrow label={file.name}>
+            <Box my={5}>
+              <Image src={file.url} border="3px solid black" alt={file.name} />
             </Box>
-          </Box>
+          </Tooltip>
         ))}
+        <Flex gap={2}>
+          <Menu>
+            <MenuButton
+              as={Button}
+              rightIcon={<DeleteIcon ml={2} />}
+              colorScheme="red"
+            >
+              Delete Image
+            </MenuButton>
+            <MenuList>
+              <MenuItem
+                onClick={() => {
+                  handleImageSelection("*");
+                  setIsEditing(true);
+                }}
+              >
+                All
+              </MenuItem>
+              {board.files.map((file) => (
+                <MenuItem
+                  onClick={() => {
+                    handleImageSelection(file.name);
+                    setIsEditing(true);
+                  }}
+                >
+                  {file.name}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        </Flex>
+      </FormControl>
       <FormControl>
-        <FormLabel>Image</FormLabel>
+        <FormLabel>New Attachments</FormLabel>
         <Input
           type="file"
           accept="image/*"
           multiple
-          onChange={(e) => setUploadFiles(e.target.files)}
+          onChange={(e) => {
+            setUploadFiles(e.target.files);
+            setIsEditing(true);
+          }}
         />
-        <FormHelperText>
-          can upload 1MB per file maximum, total under 10MB
-        </FormHelperText>
       </FormControl>
       <Button isDisabled={!isEditing} onClick={onOpen2} colorScheme="blue">
         Save
