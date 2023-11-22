@@ -1,6 +1,11 @@
 import {
   Box,
   Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Center,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -12,6 +17,8 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 export function MemeberSignUp() {
   const [id, setId] = useState("");
@@ -178,83 +185,92 @@ export function MemeberSignUp() {
   }
 
   return (
-    <Box>
-      <Heading>Sign Up</Heading>
-      <FormControl isInvalid={!idAvailable}>
-        <FormLabel>ID</FormLabel>
-        <Flex>
-          <Input
-            value={id}
-            onChange={(e) => {
-              setId(e.target.value);
-              setIdAvailable(false);
-            }}
-          />
-          <Button onClick={handleIdCheck}>Check</Button>
-        </Flex>
-        <FormErrorMessage>Please Check whether ID exists</FormErrorMessage>
-      </FormControl>
-      <FormControl>
-        <FormLabel>Password</FormLabel>
-        <Input
-          type="password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-        <FormErrorMessage>Please Enter Password</FormErrorMessage>
-      </FormControl>
-      <FormControl isInvalid={password !== passwordCheck}>
-        <FormLabel>Check Password</FormLabel>
-        <Input
-          type="password"
-          value={passwordCheck}
-          onChange={(e) => setPasswordCheck(e.target.value)}
-        />
-        <FormErrorMessage>Password does not match</FormErrorMessage>
-      </FormControl>
-      <FormControl isInvalid={!nickNameAvailable}>
-        <FormLabel>Nickname</FormLabel>
-        <Flex>
-          <Input
-            type="text"
-            value={nickName}
-            onChange={(e) => {
-              setNickName(e.target.value);
-              setNickNameAvailable(false);
-            }}
-          />
-          <Button onClick={handleNickNameCheck}>Check</Button>
-        </Flex>
-        <FormErrorMessage>
-          Please Check whether nickname exists
-        </FormErrorMessage>
-      </FormControl>
-      <FormControl isInvalid={!emailAvailable}>
-        <FormLabel>Email</FormLabel>
-        <Flex>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setEmailAvailable(false);
-            }}
-          />
-          <Button onClick={handleEmailCheck}>Check</Button>
-        </Flex>
-        <FormErrorMessage>
-          Please Check whether email is available
-        </FormErrorMessage>
-      </FormControl>
-      <Button
-        isDisabled={!isQualified}
-        onClick={handleSubmit}
-        colorScheme="blue"
-      >
-        Sign up
-      </Button>
-    </Box>
+    <Center>
+      <Card w={"lg"} mb={10}>
+        <CardHeader>
+          <Heading>Sign Up</Heading>
+        </CardHeader>
+        <CardBody>
+          <FormControl isInvalid={!idAvailable}>
+            <FormLabel>ID</FormLabel>
+            <Flex gap={2}>
+              <Input
+                value={id}
+                onChange={(e) => {
+                  setId(e.target.value);
+                  setIdAvailable(false);
+                }}
+              />
+              <Button onClick={handleIdCheck}>Check</Button>
+            </Flex>
+            <FormErrorMessage>Please Check whether ID exists</FormErrorMessage>
+          </FormControl>
+          <FormControl>
+            <FormLabel>Password</FormLabel>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+            <FormErrorMessage>Please Enter Password</FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={password !== passwordCheck}>
+            <FormLabel>Check Password</FormLabel>
+            <Input
+              type="password"
+              value={passwordCheck}
+              onChange={(e) => setPasswordCheck(e.target.value)}
+            />
+            <FormErrorMessage>Password does not match</FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={!nickNameAvailable}>
+            <FormLabel>Nickname</FormLabel>
+            <Flex gap={2}>
+              <Input
+                type="text"
+                value={nickName}
+                onChange={(e) => {
+                  setNickName(e.target.value);
+                  setNickNameAvailable(false);
+                }}
+              />
+              <Button onClick={handleNickNameCheck}>Check</Button>
+            </Flex>
+            <FormErrorMessage>
+              Please Check whether nickname exists
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={!emailAvailable}>
+            <FormLabel>Email</FormLabel>
+            <Flex gap={2}>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailAvailable(false);
+                }}
+              />
+              <Button onClick={handleEmailCheck}>Check</Button>
+            </Flex>
+            <FormErrorMessage>
+              Please Check whether email is available
+            </FormErrorMessage>
+          </FormControl>
+        </CardBody>
+        <CardFooter justifyContent="center" gap={1}>
+          <Button
+            isDisabled={!isQualified}
+            onClick={handleSubmit}
+            colorScheme="blue"
+          >
+            Sign up
+          </Button>
+          <Button onClick={() => navigate(-1)}>Cancel</Button>
+        </CardFooter>
+      </Card>
+    </Center>
   );
 }

@@ -13,6 +13,7 @@ import {
   Flex,
   Input,
   Select,
+  Center,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -23,6 +24,7 @@ import {
   faAngleRight,
   faHeart,
   faImages,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 
 import * as PropTypes from "prop-types";
@@ -52,33 +54,35 @@ function Pagination({ pageInfo }) {
   }
 
   return (
-    <Box mt={5}>
-      <Flex justifyContent="center">
-        {pageInfo.prevPageNumber && (
-          <PageButton variant="ghost" pageNumber={pageInfo.prevPageNumber}>
-            <FontAwesomeIcon icon={faAngleLeft} />
-          </PageButton>
-        )}
+    <Center mt={5} mb={40}>
+      <Box>
+        <Flex justifyContent="center">
+          {pageInfo.prevPageNumber && (
+            <PageButton variant="ghost" pageNumber={pageInfo.prevPageNumber}>
+              <FontAwesomeIcon icon={faAngleLeft} />
+            </PageButton>
+          )}
 
-        {pageNumbers.map((pageNumber) => (
-          <PageButton
-            key={pageNumber}
-            variant={
-              pageNumber === pageInfo.currentPageNumber ? "solid" : "ghost"
-            }
-            pageNumber={pageNumber}
-          >
-            {pageNumber}
-          </PageButton>
-        ))}
+          {pageNumbers.map((pageNumber) => (
+            <PageButton
+              key={pageNumber}
+              variant={
+                pageNumber === pageInfo.currentPageNumber ? "solid" : "ghost"
+              }
+              pageNumber={pageNumber}
+            >
+              {pageNumber}
+            </PageButton>
+          ))}
 
-        {pageInfo.nextPageNumber && (
-          <PageButton variant="ghost" pageNumber={pageInfo.nextPageNumber}>
-            <FontAwesomeIcon icon={faAngleRight} />
-          </PageButton>
-        )}
-      </Flex>
-    </Box>
+          {pageInfo.nextPageNumber && (
+            <PageButton variant="ghost" pageNumber={pageInfo.nextPageNumber}>
+              <FontAwesomeIcon icon={faAngleRight} />
+            </PageButton>
+          )}
+        </Flex>
+      </Box>
+    </Center>
   );
 }
 
@@ -97,18 +101,30 @@ function SearchComponent() {
   }
 
   return (
-    <Flex>
-      <Select onChange={(e) => setCategory(e.target.value)}>
-        <option selected value="all">
-          All
-        </option>
-        <option value="title">Title</option>
-        <option value="content">Content</option>
-        <option value="nickName">Writer</option>
-      </Select>
-      <Input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
-      <Button onClick={handleSearch}>Search</Button>
-    </Flex>
+    <Center mt={5}>
+      <Flex w={"80%"} gap={1}>
+        <Select
+          defaultValue="all"
+          onChange={(e) => setCategory(e.target.value)}
+          w={"30%"}
+        >
+          <option selected value="all">
+            All
+          </option>
+          <option value="title">Title</option>
+          <option value="content">Content</option>
+          <option value="nickName">Writer</option>
+        </Select>
+        <Input
+          w="62%"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+        <Button w="8%" colorScheme="blue" onClick={handleSearch}>
+          <FontAwesomeIcon icon={faSearch} />
+        </Button>
+      </Flex>
+    </Center>
   );
 }
 
@@ -146,17 +162,17 @@ export function BoardList() {
   return (
     <Box>
       <Heading>Read Boards</Heading>
-      <Box>
+      <Box mt={8}>
         <Table>
           <Thead>
             <Tr>
-              <Th>ID</Th>
-              <Th>
+              <Th w="5%">ID</Th>
+              <Th w="5%">
                 <FontAwesomeIcon icon={faHeart} />
               </Th>
-              <Th>Title</Th>
-              <Th>by</Th>
-              <Th>Date</Th>
+              <Th w="45%">Title</Th>
+              <Th w="15%">by</Th>
+              <Th w="30%">Date</Th>
             </Tr>
           </Thead>
           <Tbody>

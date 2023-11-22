@@ -4,6 +4,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Divider,
   Flex,
   Heading,
   Input,
@@ -35,7 +36,7 @@ function CommentForm({ boardId, isSubmitting, onSubmit }) {
   }
 
   return (
-    <Box m={3}>
+    <Box my={5}>
       <Heading size="md" mb={3}>
         Write Comment
       </Heading>

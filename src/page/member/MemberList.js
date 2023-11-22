@@ -34,7 +34,7 @@ export function MemberList() {
   return (
     <Box>
       <Heading>Member List</Heading>
-      <Table>
+      <Table mt={8}>
         <Thead>
           <Tr>
             <Th>ID</Th>

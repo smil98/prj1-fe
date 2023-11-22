@@ -2,6 +2,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Box,
   Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Center,
   FormControl,
   FormLabel,
   Heading,
@@ -81,31 +86,37 @@ export function MemberView() {
   }
 
   return (
-    <Box>
-      <Heading>{params.get("id")} Account Info</Heading>
-      <FormControl>
-        <FormLabel>Password</FormLabel>
-        <Input type="text" value={member.password} readOnly />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Nickname</FormLabel>
-        <Input type="text" value={member.nickName} readOnly />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Email</FormLabel>
-        <Input type="text" value={member.email} readOnly />
-      </FormControl>
-      <FormControl>
-        <Button
-          colorScheme="purple"
-          onClick={() => navigate("/member/edit?" + params.toString())}
-        >
-          Edit
-        </Button>
-        <Button colorScheme="red" onClick={onOpen}>
-          Delete Account
-        </Button>
-      </FormControl>
+    <Center>
+      <Card w={"lg"}>
+        <CardHeader>
+          <Heading>{params.get("id")} Account Info</Heading>
+        </CardHeader>
+        <CardBody>
+          <FormControl mb={2}>
+            <FormLabel>Password</FormLabel>
+            <Input type="text" value={member.password} readOnly />
+          </FormControl>
+          <FormControl mb={2}>
+            <FormLabel>Nickname</FormLabel>
+            <Input type="text" value={member.nickName} readOnly />
+          </FormControl>
+          <FormControl mb={2}>
+            <FormLabel>Email</FormLabel>
+            <Input type="text" value={member.email} readOnly />
+          </FormControl>
+        </CardBody>
+        <CardFooter justifyContent={"center"} gap={1}>
+          <Button
+            colorScheme="purple"
+            onClick={() => navigate("/member/edit?" + params.toString())}
+          >
+            Edit
+          </Button>
+          <Button colorScheme="red" onClick={onOpen}>
+            Delete
+          </Button>
+        </CardFooter>
+      </Card>
 
       {/*  Delete Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -122,6 +133,6 @@ export function MemberView() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Box>
+    </Center>
   );
 }

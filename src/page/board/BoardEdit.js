@@ -19,6 +19,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Textarea,
   Tooltip,
   useDisclosure,
   useToast,
@@ -117,8 +118,9 @@ export function BoardEdit() {
       </FormControl>
       <FormControl>
         <FormLabel>Content</FormLabel>
-        <Input
+        <Textarea
           value={board.content}
+          sx={{ whiteSpace: "pre-wrap" }}
           onChange={(e) => {
             updateBoard((draft) => {
               draft.content = e.target.value;

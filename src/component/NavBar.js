@@ -1,7 +1,22 @@
-import { Box, Button, Flex, useToast } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuGroup,
+  MenuItem,
+  MenuList,
+  Spacer,
+  Text,
+  Tooltip,
+  useToast,
+} from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LoginContext } from "./LoginProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,15 +35,16 @@ export function NavBar() {
   const { fetchLogin, login, isAuthenticated, isAdmin } =
     useContext(LoginContext);
   const urlParams = new URLSearchParams();
-  if (login !== "") {
-    urlParams.set("id", login.id);
-  }
 
   const location = useLocation();
 
   useEffect(() => {
     fetchLogin();
   }, [location]);
+
+  if (login !== "") {
+    urlParams.set("id", login.id);
+  }
 
   function handleLogout() {
     // TODO : add possible stuff after logout
@@ -51,96 +67,90 @@ export function NavBar() {
   }
 
   return (
-    <Flex justifyContent="space-between" mb={3}>
-      <Box>
+    <Flex mb={5}>
+      <Button
+        variant="ghost"
+        _hover={{ bg: "none" }}
+        onClick={() => navigate("/")}
+        leftIcon={<FontAwesomeIcon icon={faHouse} />}
+      >
+        Home
+      </Button>
+      {isAuthenticated() && (
         <Button
           variant="ghost"
           _hover={{ bg: "none" }}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/write")}
+          leftIcon={<FontAwesomeIcon icon={faPen} />}
         >
-          <FontAwesomeIcon icon={faHouse} style={{ marginRight: "0.5em" }} />
-          Home
+          Write
         </Button>
-        {isAuthenticated() && (
-          <Button
-            variant="ghost"
-            _hover={{ bg: "none" }}
-            onClick={() => navigate("/write")}
-          >
-            <FontAwesomeIcon icon={faPen} style={{ marginRight: "0.5em" }} />
-            Write
-          </Button>
-        )}
-        {isAuthenticated() || (
-          <Button
-            variant="ghost"
-            _hover={{ bg: "none" }}
-            onClick={() => navigate("/join")}
-          >
-            <FontAwesomeIcon
-              icon={faUserPlus}
-              style={{ marginRight: "0.5em" }}
-            />
-            Sign Up
-          </Button>
-        )}
-        {isAdmin() && (
-          <Button
-            variant="ghost"
-            _hover={{ bg: "none" }}
-            onClick={() => navigate("/member/list")}
-          >
-            <FontAwesomeIcon icon={faUsers} style={{ marginRight: "0.5em" }} />
-            Member List
-          </Button>
-        )}
-        {isAuthenticated() && (
-          <Button
-            variant="ghost"
-            _hover={{ bg: "none" }}
-            onClick={() => navigate("/member?" + urlParams.toString())}
-          >
-            <FontAwesomeIcon icon={faUser} style={{ marginRight: "0.5em" }} />
-            Account Info
-          </Button>
-        )}
-        {isAuthenticated() || (
-          <Button
-            variant="ghost"
-            _hover={{ bg: "none" }}
-            onClick={() => navigate("/login")}
-          >
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              style={{ marginRight: "0.5em" }}
-            />
-            Login
-          </Button>
-        )}
-        {isAuthenticated() && (
-          <Button
-            variant="ghost"
-            _hover={{ bg: "none" }}
-            onClick={handleLogout}
-          >
-            <FontAwesomeIcon
-              icon={faRightFromBracket}
-              style={{ marginRight: "0.5em" }}
-            />
-            Log out
-          </Button>
-        )}
-      </Box>
-      {isAuthenticated() && (
-        <Box
-          textAlign="center"
-          mr={3}
-          p={2}
-          fontSize="md"
-          fontWeight="semibold"
+      )}
+      <Spacer />
+      {isAuthenticated() || (
+        <Button
+          variant="ghost"
+          _hover={{ bg: "none" }}
+          onClick={() => navigate("/join")}
+          leftIcon={<FontAwesomeIcon icon={faUserPlus} />}
         >
-          Welcome, {login.nickName}
-        </Box>
+          Sign Up
+        </Button>
+      )}
+      {isAuthenticated() && (
+        <>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              variant="ghost"
+              _hover={{ bg: "none" }}
+              icon={<Avatar sx={{ width: 6, height: 6 }} />}
+            />
+            <MenuList>
+              <MenuGroup title="Account Settings">
+                <MenuItem
+                  icon={<FontAwesomeIcon icon={faUser} />}
+                  onClick={() => navigate("/member?" + urlParams.toString())}
+                >
+                  Account Info
+                </MenuItem>
+              </MenuGroup>
+              {isAdmin() && (
+                <MenuGroup title="Admin">
+                  <MenuItem
+                    onClick={() => navigate("/member/list")}
+                    icon={<FontAwesomeIcon icon={faUsers} />}
+                  >
+                    Member List
+                  </MenuItem>
+                </MenuGroup>
+              )}
+            </MenuList>
+          </Menu>
+          <Text fontWeight="semibold" lineHeight={"2.5rem"}>
+            Welcome, {login.nickName}
+          </Text>
+        </>
+      )}
+      {isAuthenticated() || (
+        <Button
+          variant="ghost"
+          _hover={{ bg: "none" }}
+          onClick={() => navigate("/login")}
+          leftIcon={<FontAwesomeIcon icon={faRightToBracket} />}
+        >
+          Login
+        </Button>
+      )}
+      {isAuthenticated() && (
+        <Button
+          variant="ghost"
+          _hover={{ bg: "none" }}
+          onClick={handleLogout}
+          leftIcon={<FontAwesomeIcon icon={faRightFromBracket} />}
+        >
+          Log out
+        </Button>
       )}
     </Flex>
   );

@@ -1,6 +1,11 @@
 import {
   Box,
   Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Center,
   Flex,
   FormControl,
   FormHelperText,
@@ -162,73 +167,82 @@ export function MemberEdit() {
   }
 
   return (
-    <Box>
-      <Heading textAlign="center">Edit {id}'s Account Info</Heading>
-      <FormControl>
-        <FormLabel>Password</FormLabel>
-        <Input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <FormHelperText>
-          If left blank, the password won't change
-        </FormHelperText>
-      </FormControl>
-      {password.length > 0 && (
-        <FormControl>
-          <FormLabel>Re-enter Password</FormLabel>
-          <Input
-            type="password"
-            value={passwordCheck}
-            onChange={(e) => setPasswordCheck(e.target.value)}
-          />
-        </FormControl>
-      )}
-      <FormControl>
-        <FormLabel>Nickname</FormLabel>
-        <Flex>
-          <Input
-            type="text"
-            value={nickName}
-            onChange={(e) => {
-              setNickName(e.target.value);
-              setNickNameAvailable(false);
-            }}
-          />
-          <Button isDisabled={nickChecked} onClick={handleNickCheck}>
-            Check
+    <Center>
+      <Card w="lg">
+        <CardHeader>
+          <Heading textAlign="center">Edit {id}'s Account Info</Heading>
+        </CardHeader>
+        <CardBody>
+          <FormControl>
+            <FormLabel>Password</FormLabel>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <FormHelperText>
+              If left blank, the password won't change
+            </FormHelperText>
+          </FormControl>
+          {password.length > 0 && (
+            <FormControl mb={2}>
+              <FormLabel>Re-enter Password</FormLabel>
+              <Input
+                type="password"
+                value={passwordCheck}
+                onChange={(e) => setPasswordCheck(e.target.value)}
+              />
+            </FormControl>
+          )}
+          <FormControl mb={2}>
+            <FormLabel>Nickname</FormLabel>
+            <Flex>
+              <Input
+                type="text"
+                value={nickName}
+                onChange={(e) => {
+                  setNickName(e.target.value);
+                  setNickNameAvailable(false);
+                }}
+              />
+              <Button isDisabled={nickChecked} onClick={handleNickCheck}>
+                Check
+              </Button>
+            </Flex>
+          </FormControl>
+          {/*if email is changed check whether new=orig or not */}
+          <FormControl>
+            <FormLabel>Email</FormLabel>
+            <Flex>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailAvailable(false);
+                }}
+              />
+              <Button isDisabled={emailChecked} onClick={handelEmailCheck}>
+                Check
+              </Button>
+            </Flex>
+          </FormControl>
+        </CardBody>
+        <CardFooter justifyContent="center" gap={1}>
+          <Button
+            isDisabled={
+              emailChecked === false ||
+              passwordChecked === false ||
+              nickChecked === false
+            }
+            colorScheme="blue"
+            onClick={onOpen}
+          >
+            Edit
           </Button>
-        </Flex>
-      </FormControl>
-      {/*if email is changed check whether new=orig or not */}
-      <FormControl>
-        <FormLabel>Email</FormLabel>
-        <Flex>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setEmailAvailable(false);
-            }}
-          />
-          <Button isDisabled={emailChecked} onClick={handelEmailCheck}>
-            Check
-          </Button>
-        </Flex>
-      </FormControl>
-      <Button
-        isDisabled={
-          emailChecked === false ||
-          passwordChecked === false ||
-          nickChecked === false
-        }
-        colorScheme="blue"
-        onClick={onOpen}
-      >
-        Edit
-      </Button>
+          <Button onClick={() => navigate(-1)}>Cancel</Button>
+        </CardFooter>
+      </Card>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -244,6 +258,6 @@ export function MemberEdit() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Box>
+    </Center>
   );
 }

@@ -5,6 +5,7 @@ import {
   Badge,
   Box,
   Button,
+  Center,
   Flex,
   Heading,
   Image,
@@ -37,36 +38,31 @@ function LikeContainer({ like, onClick }) {
   }
 
   return (
-    <Flex gap={2} justifyContent="center">
-      <Tooltip
-        isDisabled={isAuthenticated()}
-        hasArrow
-        label={"Please login to like"}
-      >
-        <Button
-          size="lg"
-          onClick={onClick}
-          colorScheme="red"
-          style={{ color: "white" }}
+    <Center>
+      <Flex>
+        <Tooltip
+          isDisabled={isAuthenticated()}
+          hasArrow
+          label={"Please login to like"}
         >
-          {like.like && (
-            <FontAwesomeIcon
-              icon={fullHeart}
-              size="lg"
-              style={{ marginRight: "0.5em" }}
-            />
-          )}
-          {like.like || (
-            <FontAwesomeIcon
-              icon={emptyHeart}
-              size="lg"
-              style={{ marginRight: "0.5em" }}
-            />
-          )}
-          {like.countLike}
-        </Button>
-      </Tooltip>
-    </Flex>
+          <Button
+            size="lg"
+            onClick={onClick}
+            colorScheme="red"
+            style={{ color: "white" }}
+            leftIcon={
+              like.like ? (
+                <FontAwesomeIcon icon={fullHeart} />
+              ) : (
+                <FontAwesomeIcon icon={emptyHeart} />
+              )
+            }
+          >
+            {like.countLike}
+          </Button>
+        </Tooltip>
+      </Flex>
+    </Center>
   );
 }
 
@@ -143,7 +139,7 @@ export function BoardView() {
   return (
     <Box>
       <Heading>View Post</Heading>
-      <Box m={3} borderWidth="1px" p={3}>
+      <Box m={5} borderWidth="1px" px={8} py={5}>
         <Stack spacing={0} direction={"row"}>
           <Text fontSize={"3xl"} as={"b"}>
             {board.title}
@@ -156,12 +152,13 @@ export function BoardView() {
             <Box p={1}>
               <Button
                 colorScheme="purple"
-                variant={"ghost"}
+                variant="link"
+                mt={4}
                 onClick={() => navigate("/edit/" + id)}
               >
                 <EditIcon />
               </Button>
-              <Button variant="ghost" colorScheme="red" onClick={onOpen}>
+              <Button variant="link" colorScheme="red" onClick={onOpen}>
                 <DeleteIcon />
               </Button>
             </Box>
@@ -170,7 +167,9 @@ export function BoardView() {
         <Text mt={-3}>
           <Badge>{board.nickName}</Badge>
         </Text>
-        <Text mt={10}>{board.content}</Text>
+        <Text sx={{ whiteSpace: "pre-wrap" }} mt={10}>
+          {board.content}
+        </Text>
         {board.files.map((file) => (
           <Box my={5}>
             <Image src={file.url} border="3px solid black" alt={file.name} />
